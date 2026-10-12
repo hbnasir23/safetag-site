@@ -13,8 +13,8 @@ function Person({ name, role, bio, photo }) {
         <div className="photo">Photo</div>
       )}
       <h3>{name}</h3>
-      <p className="role">{role}</p>
-      <p>{bio}</p>
+      {role && <p className="role">{role}</p>}
+      {bio && <p>{bio}</p>}
     </div>
   );
 }

@@ -7,19 +7,18 @@ export const CONTACT_ACCESS_KEY = '245db6b4-ba97-473d-a40c-025c8686928b';
 
 export const UPDATED = '12 October 2026';
 
-// Placeholders until the team's real details are added. `photo` is a path
-// under /public (for example '/img/team/haris.jpg'); leave it out to show
-// the grey box.
+// `role` and `bio` are optional lines under the name. `photo` is a path under
+// /public (for example '/img/team/haris.jpg'); leave it out to show the grey box.
 export const TEAM = [
-  { name: 'Team Member 1', role: 'App and backend', bio: 'A line or two about what they built goes here.' },
-  { name: 'Team Member 2', role: 'Hardware and firmware', bio: 'A line or two about what they built goes here.' },
-  { name: 'Team Member 3', role: 'Design and testing', bio: 'A line or two about what they built goes here.' },
-  { name: 'Team Member 4', role: 'Research and documentation', bio: 'A line or two about what they built goes here.' },
+  { name: 'Haris Bin Nasir' },
+  { name: 'Aun Zaidi' },
+  { name: 'Mariha Mahmood' },
+  { name: 'Batool Fatima' },
 ];
 
 export const SUPERVISORS = [
-  { name: 'Supervisor Name', role: 'Project supervisor', bio: 'Title and department go here.' },
-  { name: 'Co-Supervisor Name', role: 'Co-supervisor', bio: 'Title and department go here.' },
+  { name: 'Engr Sana Fatima', role: 'Supervisor' },
+  { name: 'Mr Shaheer Shah', role: 'External supervisor' },
 ];
 
 // Planning figures, not offers. Nothing is on sale yet.
@@ -35,7 +34,7 @@ export const PLANS = [
   {
     when: 'Coming soon',
     name: 'SafeTag Device',
-    price: 'Rs 4,999',
+    price: 'Rs 6,999',
     unit: 'one time',
     note: 'Plus Rs 299 a month for its mobile connection.',
     features: ['Everything in the app', 'Works without a phone', 'Voice call to contacts on SOS', 'Key ring and charging cable'],
@@ -45,10 +44,10 @@ export const PLANS = [
   {
     when: 'Coming soon',
     name: 'Family Pack',
-    price: 'Rs 12,999',
+    price: 'Rs 19,999',
     unit: 'for three',
     note: 'Plus Rs 749 a month for all three.',
-    features: ['Three SafeTag devices', 'One shared family view', 'Saves Rs 1,998 on the devices', 'Priority support'],
+    features: ['Three SafeTag devices', 'One shared family view', 'Saves Rs 998 on the devices', 'Priority support'],
     action: { label: 'Ask about the pack', to: '/contact?topic=Family%20pack' },
   },
 ];
