@@ -63,11 +63,10 @@ section + section { border-top: 1px solid var(--line); }
 .nav .button { padding: 10px 16px; border-bottom: 0; color: var(--white); }
 .nav .button:hover { color: var(--white); }
 .menu { display: none; margin-left: auto; }
-.menu summary { list-style: none; cursor: pointer; font-weight: 700; color: var(--ink); padding: 8px 12px; border: 1px solid var(--ink); border-radius: 6px; }
-.menu summary::-webkit-details-marker { display: none; }
-.menu[open] .menu-list { display: grid; }
-.menu-list { display: none; position: absolute; left: 0; right: 0; top: 68px; background: var(--paper); border-bottom: 1px solid var(--line); padding: 8px 24px 20px; gap: 2px; }
+.menu-toggle { font: inherit; font-weight: 700; color: var(--ink); background: transparent; cursor: pointer; padding: 8px 12px; border: 1px solid var(--ink); border-radius: 6px; }
+.menu-list { display: grid; position: absolute; left: 0; right: 0; top: 68px; background: var(--paper); border-bottom: 1px solid var(--line); padding: 8px 24px 20px; gap: 2px; }
 .menu-list a { padding: 12px 0; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--line); }
+.menu-list a[aria-current="page"] { color: var(--ink); box-shadow: inset 3px 0 0 var(--yellow); padding-left: 12px; }
 @media (max-width: 820px) {
   .nav { display: none; }
   .menu { display: block; }
@@ -85,6 +84,7 @@ section + section { border-top: 1px solid var(--line); }
 .button.outline:hover { background: var(--ink); color: var(--white); }
 .button.unavailable { background: transparent; color: var(--muted); border-color: var(--line); cursor: default; }
 .button.unavailable:hover { background: transparent; }
+.button:disabled { opacity: 0.6; cursor: default; }
 .button svg { width: 20px; height: 20px; }
 .button small { display: block; font-size: 11px; font-weight: 600; opacity: 0.7; line-height: 1.2; text-align: left; }
 .button span { display: block; line-height: 1.2; text-align: left; }
@@ -154,6 +154,8 @@ figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
 .band .button { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
 .band .button:hover { background: #ffd040; border-color: #ffd040; }
 .band .button.unavailable { background: transparent; border-color: #3a3f4a; color: #8b92a0; }
+.band .button.ghost { background: transparent; border-color: #3a3f4a; color: #c9ced8; }
+.band .button.ghost:hover { background: transparent; border-color: #c9ced8; color: var(--white); }
 .band .small { color: #8b92a0; }
 
 /* ── Pricing ── */
@@ -185,6 +187,7 @@ table.compare { width: 100%; border-collapse: collapse; font-size: 16px; margin-
 .people { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-top: 36px; }
 .people.two { grid-template-columns: repeat(2, minmax(0, 300px)); }
 .person .photo { aspect-ratio: 1; background: var(--tint); border: 1px solid var(--line); border-radius: 4px; display: grid; place-items: center; color: #a8a393; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+.person img.photo { width: 100%; object-fit: cover; padding: 0; }
 .person h3 { font-size: 18px; }
 .person .role { font-size: 14px; font-weight: 700; color: var(--muted); margin: 2px 0 8px; }
 .person p { font-size: 15px; margin: 0; }
