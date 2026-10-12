@@ -38,9 +38,9 @@ where messages go, sign in at web3forms.com.
 
 ## Still to fill in
 
-- Team and supervisor names, roles, bios and photos: `TEAM` and `SUPERVISORS`
-  in `src/content/site.js`. Put photos in `public/img/team/` and set `photo`.
-- Prices on the pricing page are placeholders (`PLANS` in the same file).
+- Team roles, bios and photos: `TEAM` and `SUPERVISORS` in
+  `src/content/site.js`. Put photos in `public/img/team/` and set `photo`.
+- Prices on the pricing page are planning figures (`PLANS` in the same file).
 - The privacy policy and terms are a first draft and have not been reviewed
   by a lawyer.
 
