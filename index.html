@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SafeTag — One press away from safe</title>
+<meta name="description" content="SafeTag is a personal safety app: one press sends an SOS and your live location to the people you trust. Download the Android test build.">
+<meta name="theme-color" content="#0d0f14">
+<link rel="icon" href="favicon.png">
+<meta property="og:title" content="SafeTag — One press away from safe">
+<meta property="og:description" content="One press sends an SOS and your live location to the people you trust. Android test build.">
+<meta property="og:image" content="icon.png">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a22;
+    --card: #1a1e26;
+    --line: #2c3040;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --subtle: #64748b;
+    --yellow: #ffc107;
+    --amber: #f59e0b;
+    --ink: #111111;
+    --red: #ef4444;
+    --green: #22c55e;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--yellow); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+
+  header { padding: 18px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.01em; }
+  .brand img { width: 34px; height: 34px; border-radius: 9px; }
+  .tag {
+    margin-left: auto; font-size: 12px; font-weight: 700; color: var(--yellow);
+    border: 1px solid rgba(255, 193, 7, .35); background: rgba(255, 193, 7, .08);
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+  }
+
+  .hero { padding: 44px 0 56px; text-align: center; }
+  .hero img { width: 104px; height: 104px; border-radius: 26px; box-shadow: 0 18px 50px rgba(255, 193, 7, .22); }
+  h1 { font-size: clamp(34px, 7vw, 58px); line-height: 1.05; letter-spacing: -.03em; margin: 26px 0 14px; text-wrap: balance; }
+  h1 span { color: var(--yellow); }
+  .lead { font-size: clamp(16px, 2.4vw, 19px); color: var(--muted); max-width: 620px; margin: 0 auto 30px; text-wrap: pretty; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--yellow); color: var(--ink); text-decoration: none;
+    font-weight: 800; font-size: 17px; padding: 15px 26px; border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(255, 193, 7, .25);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(255, 193, 7, .32); }
+  .btn:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .btn svg { width: 20px; height: 20px; }
+  .meta { margin-top: 14px; font-size: 13px; color: var(--subtle); }
+  .meta b { color: var(--muted); font-weight: 600; }
+
+  section { padding: 44px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: clamp(22px, 4vw, 30px); letter-spacing: -.02em; margin: 0 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 26px; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .card h3 { margin: 12px 0 6px; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .dot { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; }
+  .dot svg { width: 20px; height: 20px; }
+  .red { background: rgba(239, 68, 68, .14); color: var(--red); }
+  .yel { background: rgba(255, 193, 7, .14); color: var(--yellow); }
+  .grn { background: rgba(34, 197, 94, .14); color: var(--green); }
+
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; display: grid; gap: 12px; }
+  ol.steps li {
+    counter-increment: s; position: relative;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 16px 60px;
+  }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 16px; top: 16px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--yellow); color: var(--ink); font-weight: 800; display: grid; place-items: center;
+  }
+  ol.steps b { display: block; }
+  ol.steps span { color: var(--muted); font-size: 14.5px; }
+
+  .note { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--yellow); border-radius: 12px; padding: 16px 18px; }
+  .note ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14.5px; }
+  .note li + li { margin-top: 6px; }
+  .note strong { color: var(--text); }
+
+  footer { padding: 28px 0 44px; border-top: 1px solid var(--line); color: var(--subtle); font-size: 13px; text-align: center; }
+
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="brand">
+    <img src="icon.png" alt="" width="34" height="34">
+    SafeTag
+    <span class="tag">Test build</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <img src="icon.png" alt="SafeTag app icon" width="104" height="104">
+    <h1>One press away from <span>safe</span>.</h1>
+    <p class="lead">SafeTag sends an SOS and your live location to the people you trust, the moment you need them. No unlocking, no typing, no explaining.</p>
+    <a class="btn" href="SafeTag.apk" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      Download for Android
+    </a>
+    <p class="meta" id="meta">Android 6 or newer · about 24 MB</p>
+  </div>
+
+  <section>
+    <h2>What it does</h2>
+    <p class="sub">Built for the moments when calling for help isn't possible.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="dot red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>
+        <h3>SOS, loud or silent</h3>
+        <p>Double-tap for an SOS with an alarm. Press and hold for a silent one that nobody around you can hear.</p>
+      </div>
+      <div class="card">
+        <div class="dot yel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h3>Live location</h3>
+        <p>Your trusted contacts see where you are on a map, updating as you move, for as long as the alert is active.</p>
+      </div>
+      <div class="card">
+        <div class="dot grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/></svg></div>
+        <h3>Journey mode</h3>
+        <p>Pick a route before you travel. If you leave it, or don't arrive on time, your contacts are told automatically.</p>
+      </div>
+      <div class="card">
+        <div class="dot yel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <h3>Safe zones</h3>
+        <p>Mark places like home and university. Contacts get a quiet notice when you arrive or leave.</p>
+      </div>
+      <div class="card">
+        <div class="dot grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg></div>
+        <h3>Trusted contacts</h3>
+        <p>You choose who is alerted, in what order, and what each person is allowed to see.</p>
+      </div>
+      <div class="card">
+        <div class="dot red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></div>
+        <h3>A wearable, soon</h3>
+        <p>We're building a small SafeTag device with its own SIM and GPS. Until it's ready, your phone does its job.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>How to install</h2>
+    <p class="sub">The app isn't on the Play Store yet, so Android asks for one extra permission.</p>
+    <ol class="steps">
+      <li><b>Download the file</b><span>Tap <a href="SafeTag.apk" download>Download for Android</a> on your phone. Your browser may warn that the file could be harmful; choose "Download anyway".</span></li>
+      <li><b>Open it</b><span>Tap the download notification, or find <code>SafeTag.apk</code> in your Downloads folder.</span></li>
+      <li><b>Allow the install</b><span>Android will say your browser isn't allowed to install apps. Tap Settings, switch on "Allow from this source", then go back and tap Install.</span></li>
+      <li><b>Sign up and add a contact</b><span>Create an account with your email, allow location and notifications, then add a trusted contact. They need the app too.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Good to know</h2>
+    <p class="sub">This is a test build for friends and classmates.</p>
+    <div class="note">
+      <ul>
+        <li><strong>Android only.</strong> There's no iPhone version yet.</li>
+        <li><strong>It's a student project in testing.</strong> Please don't rely on it as your only way to get help in a real emergency.</li>
+        <li><strong>Test data may be wiped.</strong> We reset the test server from time to time, so you might need to sign up again.</li>
+        <li><strong>To update,</strong> download the newest file from this page and install it over the old one. Your account stays.</li>
+        <li><strong>Found a bug?</strong> Tell whoever sent you this link what you did and what happened.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  SafeTag · a final-year project · not affiliated with Google Play
+</footer>
+
+<script>
+  // Shows the build date and size next to the download button (version.json
+  // is rewritten by publish.ps1 each time a new APK is put up).
+  fetch('version.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (v) {
+      if (!v) return;
+      var when = new Date(v.built).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+      document.getElementById('meta').innerHTML =
+        'Android 6 or newer · ' + v.sizeMb + ' MB · <b>version ' + v.version + '</b>, built ' + when;
+    })
+    .catch(function () {});
+</script>
+</body>
+</html>
