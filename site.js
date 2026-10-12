@@ -17,8 +17,10 @@
     .catch(function () {});
 })();
 
-// Contact form: saves the message to the SafeTag database.
+// Contact form: Web3Forms emails the message to the team's inbox. The access
+// key is public by design (it identifies the form, not an account).
 (function () {
+  var ACCESS_KEY = '245db6b4-ba97-473d-a40c-025c8686928b';
   var form = document.getElementById('contact-form');
   if (!form) return;
   var note = document.getElementById('form-note');
@@ -47,21 +49,24 @@
     if (message.length < 5) return say('err', 'Please write a message.');
     if (form.website.value) return say('ok', 'Thank you. Your message has been sent.'); // filled by a bot
 
-    var cfg = window.SAFETAG || {};
     button.disabled = true;
     button.textContent = 'Sending…';
-    fetch(cfg.url + '/rest/v1/contact_messages', {
+    fetch('https://api.web3forms.com/submit', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: cfg.key,
-        Authorization: 'Bearer ' + cfg.key,
-        Prefer: 'return=minimal'
-      },
-      body: JSON.stringify({ name: name, email: email, topic: form.topic.value, message: message })
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: ACCESS_KEY,
+        subject: 'SafeTag website: ' + form.topic.value,
+        from_name: 'SafeTag website',
+        name: name,
+        email: email,
+        topic: form.topic.value,
+        message: message
+      })
     })
-      .then(function (r) {
-        if (!r.ok) throw new Error(r.status);
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.success }; }); })
+      .then(function (res) {
+        if (!res.ok) throw new Error('rejected');
         form.reset();
         say('ok', 'Thank you. Your message has been sent, and we will reply by email.');
       })

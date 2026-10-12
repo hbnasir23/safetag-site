@@ -1,6 +1,6 @@
 # SafeTag website
 
-A one-page site that explains SafeTag and offers the latest Android test
+A small site that explains SafeTag and offers the latest Android test
 build for download. It is a stopgap until the app is on the Play Store.
 
 Plain HTML and CSS. Hosted on Vercel, which redeploys on every push to `main`.
@@ -23,7 +23,6 @@ git push
 | `build.py` | All page text, and the header and footer |
 | `styles.css` | The look of every page |
 | `site.js` | Build details under the download buttons, and the contact form |
-| `config.js` | Public address and key of the SafeTag database (written by `build.py`) |
 | `img/` | Photographs, from Pexels (free to use, no credit required) |
 | `SafeTag.apk` | The build people download (arm64, for modern phones) |
 | `version.json` | Version, build date and size shown under the download buttons |
@@ -32,9 +31,9 @@ git push
 
 ## Contact form
 
-Messages are saved to the `contact_messages` table in the SafeTag Supabase
-project. Read them in the Supabase dashboard under Table Editor. The website
-can add messages but cannot read them.
+Messages are emailed to the team's inbox by Web3Forms (free plan, 250 a
+month). The access key in `site.js` is public by design. To change where
+messages go, sign in at web3forms.com.
 
 ## Still to fill in
 
