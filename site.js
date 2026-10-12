@@ -51,19 +51,17 @@
 
     button.disabled = true;
     button.textContent = 'Sending…';
-    fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        access_key: ACCESS_KEY,
-        subject: 'SafeTag website: ' + form.topic.value,
-        from_name: 'SafeTag website',
-        name: name,
-        email: email,
-        topic: form.topic.value,
-        message: message
-      })
-    })
+    // Sent as ordinary form data: a "simple" request, so the browser does not
+    // need to ask the service's permission first.
+    var data = new FormData();
+    data.append('access_key', ACCESS_KEY);
+    data.append('subject', 'SafeTag website: ' + form.topic.value);
+    data.append('from_name', 'SafeTag website');
+    data.append('name', name);
+    data.append('email', email);
+    data.append('topic', form.topic.value);
+    data.append('message', message);
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { Accept: 'application/json' }, body: data })
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.success }; }); })
       .then(function (res) {
         if (!res.ok) throw new Error('rejected');
