@@ -6,13 +6,11 @@ page bodies below, written out as plain .html files next to this script.
 Edit the text in this file, run it, then commit and push. Vercel serves the
 generated files as they are (there is no build step on the server).
 
-The contact form posts to the app's Supabase project; its public URL and
-anon key are read from ../safetag/.env and written into config.js.
+The contact form is sent by Web3Forms to the team's inbox (see site.js).
 """
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -136,7 +134,6 @@ def page(filename: str, title: str, description: str, body: str) -> None:
   </div>
 </footer>
 
-<script src="config.js"></script>
 <script src="site.js"></script>
 </body>
 </html>
@@ -563,7 +560,7 @@ page("privacy.html", "Privacy policy | SafeTag",
     <h3>Device information</h3>
     <p>For a SafeTag wearable: battery level, signal strength and software version. For your phone: a notification token so we can send you alerts.</p>
     <h3>This website</h3>
-    <p>If you use the contact form, we keep your name, email address and message. The site itself sets no tracking cookies.</p>
+    <p>If you use the contact form, your name, email address and message are emailed to us. The site itself sets no tracking cookies.</p>
 
     <h2>Why we use it</h2>
     <ul>
@@ -583,7 +580,7 @@ page("privacy.html", "Privacy policy | SafeTag",
       <li>Railway runs the server that receives messages from the wearable.</li>
       <li>Google Firebase delivers notifications to phones.</li>
       <li>Google Maps provides the maps, place search and route planning.</li>
-      <li>Vercel hosts this website.</li>
+      <li>Vercel hosts this website, and Web3Forms delivers contact form messages to our inbox.</li>
     </ul>
     <p>We don't sell your information or share it with advertisers.</p>
 
@@ -683,19 +680,5 @@ page("terms.html", "Terms and conditions | SafeTag",
   </div>
 </section>
 """)
-
-# ─── config.js: public Supabase details for the contact form ─────────────────
-env = (ROOT.parent / "safetag" / ".env").read_text(encoding="utf-8")
-
-
-def setting(key: str) -> str:
-    m = re.search(rf"^{key}=(.+)$", env, re.M)
-    return m.group(1).strip().strip('"') if m else ""
-
-
-(ROOT / "config.js").write_text(
-    "// Public details of the SafeTag Supabase project (the same ones the app ships with).\n"
-    f'window.SAFETAG = {{ url: "{setting("SUPABASE_URL")}", key: "{setting("SUPABASE_ANON_KEY")}" }};\n',
-    encoding="utf-8", newline="\n")
 
 print("built:", ", ".join(sorted(p.name for p in ROOT.glob("*.html"))))
