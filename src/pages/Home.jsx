@@ -1,5 +1,4 @@
 import DeviceDrawing from '../components/DeviceDrawing.jsx';
-import DownloadButtons from '../components/DownloadButtons.jsx';
 import Faq from '../components/Faq.jsx';
 import { usePageTitle } from '../hooks.js';
 
@@ -15,13 +14,6 @@ const HOW = [
   ['SafeTag sends', 'The alert and your position reach our server over the mobile network in about two seconds.'],
   ['Contacts are alerted', 'Their phones ring like a call and open a live map of where you are.'],
   ['It keeps trying', "If the first person doesn't respond, the next person in your list is alerted, and so on."],
-];
-
-const INSTALL = [
-  ['Download', 'Tap the Android button. If your browser warns about the file, choose "Download anyway".'],
-  ['Open the file', 'Tap the download notification, or find SafeTag.apk in your Downloads folder.'],
-  ['Allow the install', 'Android will ask you to allow installs from your browser. Switch it on, go back, and tap Install.'],
-  ['Sign up', 'Create an account, allow location and notifications, then invite a trusted contact.'],
 ];
 
 const SPECS = [
@@ -50,8 +42,8 @@ const QUESTIONS = [
     a: 'Not as your only way to get help. SafeTag is a student project in testing. Use it alongside calling your local emergency services, not in place of them.',
   },
   {
-    q: 'Will my account be kept?',
-    a: 'We reset the test server from time to time, so you may need to sign up again. Installing a newer version over the old one keeps your account.',
+    q: 'Can I try the app?',
+    a: 'The app is in private testing and is not available to download. If you would like to help us test it, send us a message from the Contact page.',
   },
 ];
 
@@ -100,7 +92,11 @@ export default function Home() {
               SafeTag sends an SOS and your live location to the people you trust. No unlocking your phone, no typing,
               no explaining where you are.
             </p>
-            <DownloadButtons />
+            <div className="actions">
+              <a className="button" href="#watch">
+                Watch the videos
+              </a>
+            </div>
           </div>
           <figure>
             <img src="/img/hero.jpg" alt="A woman standing outdoors, looking at her phone" width="1400" height="933" />
@@ -117,6 +113,31 @@ export default function Home() {
                 <span>{label}</span>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="watch" className="band">
+        <div className="wrap">
+          <p className="kicker" style={{ color: '#8b92a0' }}>
+            Watch
+          </p>
+          <h2>See what SafeTag does.</h2>
+          <div className="videos">
+            <figure>
+              <video controls preload="none" poster="/video/film-poster.jpg" src="/video/safetag-film.mp4" />
+              <figcaption>
+                <b>Why SafeTag exists</b>
+                <span>One minute. A dramatised film made with AI-generated scenes, using real screens from our app.</span>
+              </figcaption>
+            </figure>
+            <figure>
+              <video controls preload="none" poster="/video/explainer-poster.jpg" src="/video/safetag-explainer.mp4" />
+              <figcaption>
+                <b>How it works</b>
+                <span>One minute. From the button press to your family's phone.</span>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -223,28 +244,6 @@ export default function Home() {
               </ul>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section id="download" className="band">
-        <div className="wrap">
-          <p className="kicker" style={{ color: '#8b92a0' }}>
-            Get the app
-          </p>
-          <h2>Try the test build.</h2>
-          <p className="lead" style={{ marginTop: 14 }}>
-            SafeTag isn't on the Play Store yet, so Android asks for one extra permission the first time you install
-            it.
-          </p>
-          <DownloadButtons />
-        </div>
-      </section>
-
-      <section>
-        <div className="wrap">
-          <p className="kicker">Installing</p>
-          <h2>Four steps on your Android phone.</h2>
-          <Steps items={INSTALL} />
         </div>
       </section>
 

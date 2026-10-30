@@ -36,8 +36,8 @@ function Header() {
         <Logo />
         <nav className="nav" aria-label="Main">
           {links}
-          <Link className="button" to="/#download">
-            Get the app
+          <Link className="button" to="/#watch">
+            Watch the videos
           </Link>
         </nav>
         <div className="menu">
@@ -53,7 +53,7 @@ function Header() {
           {open && (
             <nav className="menu-list" id="phone-menu" aria-label="Main">
               {links}
-              <Link to="/#download">Get the app</Link>
+              <Link to="/#watch">Watch the videos</Link>
             </nav>
           )}
         </div>
@@ -77,7 +77,7 @@ function Footer() {
               <li><Link to="/#how">How it works</Link></li>
               <li><Link to="/#device">The device</Link></li>
               <li><Link to="/pricing">Pricing</Link></li>
-              <li><Link to="/#download">Download</Link></li>
+              <li><Link to="/#watch">Videos</Link></li>
             </ul>
           </div>
           <div>
@@ -105,7 +105,7 @@ function Footer() {
   );
 }
 
-/** A new page starts at the top; a link like /#download scrolls to that section. */
+/** A new page starts at the top; a link like /#watch scrolls to that section. */
 function useScrollOnNavigate() {
   const { pathname, hash } = useLocation();
   useEffect(() => {

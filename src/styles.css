@@ -247,3 +247,12 @@ textarea { min-height: 160px; resize: vertical; }
 @media (max-width: 460px) { .site-footer .cols { grid-template-columns: 1fr; } }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Video section */
+.videos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 32px; }
+.videos figure { margin: 0; min-width: 0; }
+.videos video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; }
+.videos figcaption { margin-top: 12px; display: grid; gap: 4px; }
+.videos figcaption b { color: #ffffff; font-size: 17px; }
+.videos figcaption span { color: #b7bdc8; font-size: 15px; }
+@media (max-width: 760px) { .videos { grid-template-columns: 1fr; } }

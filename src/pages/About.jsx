@@ -92,13 +92,13 @@ export default function About() {
 
       <section className="band">
         <div className="wrap">
-          <h2>Want to help us test it?</h2>
+          <h2>See it for yourself.</h2>
           <p className="lead" style={{ marginTop: 14 }}>
-            Install the app, try to break it, and tell us what happened.
+            Watch what SafeTag does and how it works, then tell us what you think.
           </p>
           <div className="actions">
-            <Link className="button" to="/#download">
-              Get the app
+            <Link className="button" to="/#watch">
+              Watch the videos
             </Link>
             <Link className="button ghost" to="/contact">
               Contact us
