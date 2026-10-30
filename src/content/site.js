@@ -34,7 +34,7 @@ export const PLANS = [
   {
     when: 'Coming soon',
     name: 'SafeTag Device',
-    price: 'Rs 7,999',
+    price: 'Rs 9,500',
     unit: 'one time',
     note: 'Plus Rs 299 a month for its mobile connection.',
     features: ['Everything in the app', 'Works without a phone', 'Voice call to contacts on SOS', 'Key ring and charging cable'],
@@ -44,10 +44,10 @@ export const PLANS = [
   {
     when: 'Coming soon',
     name: 'Family Pack',
-    price: 'Rs 22,999',
+    price: 'Rs 27,999',
     unit: 'for three',
     note: 'Plus Rs 749 a month for all three.',
-    features: ['Three SafeTag devices', 'One shared family view', 'Saves Rs 998 on the devices', 'Priority support'],
+    features: ['Three SafeTag devices', 'One shared family view', 'Saves Rs 501 on the devices', 'Priority support'],
     action: { label: 'Ask about the pack', to: '/contact?topic=Family%20pack' },
   },
 ];
