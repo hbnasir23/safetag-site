@@ -20,7 +20,7 @@ export default function Terms() {
           <h2>1. What SafeTag is</h2>
           <p>
             SafeTag is a final-year engineering project: an Android app, a server, and a wearable device that is still
-            in development. What you can download from this site is a test build, shared so that friends, classmates
+            in development. The app is a test build, shared so that friends, classmates
             and other volunteers can try it and tell us what they find.
           </p>
 

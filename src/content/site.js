@@ -24,17 +24,17 @@ export const SUPERVISORS = [
 // Planning figures, not offers. Nothing is on sale yet.
 export const PLANS = [
   {
-    when: 'Available now',
+    when: 'In testing',
     name: 'SafeTag App',
     price: 'Free',
     note: 'Your phone acts as the SafeTag.',
     features: ['SOS, loud and silent', 'Live location for your contacts', 'Journeys and safe zones', 'Trusted contacts with permissions'],
-    action: { label: 'Download', to: '/#download', primary: true },
+    action: { label: 'Watch how it works', to: '/#watch', primary: true },
   },
   {
     when: 'Coming soon',
     name: 'SafeTag Device',
-    price: 'Rs 6,999',
+    price: 'Rs 7,999',
     unit: 'one time',
     note: 'Plus Rs 299 a month for its mobile connection.',
     features: ['Everything in the app', 'Works without a phone', 'Voice call to contacts on SOS', 'Key ring and charging cable'],
@@ -44,7 +44,7 @@ export const PLANS = [
   {
     when: 'Coming soon',
     name: 'Family Pack',
-    price: 'Rs 19,999',
+    price: 'Rs 22,999',
     unit: 'for three',
     note: 'Plus Rs 749 a month for all three.',
     features: ['Three SafeTag devices', 'One shared family view', 'Saves Rs 998 on the devices', 'Priority support'],
