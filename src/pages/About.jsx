@@ -7,11 +7,7 @@ import { usePageTitle } from '../hooks.js';
 function Person({ name, role, bio, photo }) {
   return (
     <div className="person">
-      {photo ? (
-        <img className="photo" src={photo} alt={name} loading="lazy" />
-      ) : (
-        <div className="photo">Photo</div>
-      )}
+      {photo && <img className="photo" src={photo} alt={name} loading="lazy" />}
       <h3>{name}</h3>
       {role && <p className="role">{role}</p>}
       {bio && <p>{bio}</p>}
