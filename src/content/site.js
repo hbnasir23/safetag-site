@@ -8,17 +8,17 @@ export const CONTACT_ACCESS_KEY = '245db6b4-ba97-473d-a40c-025c8686928b';
 export const UPDATED = '12 October 2026';
 
 // `role` and `bio` are optional lines under the name. `photo` is a path under
-// /public (for example '/img/team/haris.jpg'); leave it out to show the grey box.
+// /public (for example '/img/team/haris.jpg'); leave it out for no picture.
 export const TEAM = [
-  { name: 'Haris Bin Nasir' },
-  { name: 'Aun Zaidi' },
-  { name: 'Mariha Mahmood' },
-  { name: 'Batool Fatima' },
+  { name: 'Haris Bin Nasir', photo: '/img/team/haris.jpg' },
+  { name: 'Syed Muhammad Aun Zaidi', photo: '/img/team/aun.jpg' },
+  { name: 'Mariha Mehmood', photo: '/img/team/mariha.jpg' },
+  { name: 'Batool Fatima', photo: '/img/team/batool.jpg' },
 ];
 
 export const SUPERVISORS = [
-  { name: 'Engr Sana Fatima', role: 'Supervisor' },
-  { name: 'Mr Shaheer Shah', role: 'External supervisor' },
+  { name: 'Engr Sana Fatima', role: 'Supervisor', bio: 'Lecturer, Department of Software Engineering, NEDUET' },
+  { name: 'Mr Shaheer Shah', role: 'External supervisor', bio: 'Head of Engineering, Zvolta Pvt. Ltd.' },
 ];
 
 // Planning figures, not offers. Nothing is on sale yet.
