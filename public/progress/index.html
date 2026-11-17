@@ -114,6 +114,7 @@ table.cmp td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-alig
 table.cmp td:first-child{font-weight:600;width:150px}
 table.cmp td:nth-child(2){color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(255,90,79,.6)}
 table.cmp td:nth-child(3){color:var(--text)}
+table.cmp td.why{color:var(--yel2);font-size:12.5px;width:290px}
 table.cmp tr:hover td{background:rgba(255,255,255,.02)}
 
 /* clickable steps */
@@ -334,12 +335,12 @@ table.cmp tr:hover td{background:rgba(255,255,255,.02)}
   <div class="sub">Decisions taken while building, based on testing and the survey.</div>
   <div class="card" style="padding:6px 6px">
   <table class="cmp">
-    <tr><th>Area</th><th>In the proposal</th><th>What we built</th></tr>
-    <tr><td>Cellular</td><td>SIM800L 2G GSM module</td><td>SIMCom A7670G 4G LTE Cat 1: data and voice at the same time</td></tr>
-    <tr><td>Controller</td><td>ESP32</td><td>ESP32-S3-Zero, smaller and lower power</td></tr>
-    <tr><td>SOS button</td><td>Fixed double press and hold</td><td>Three configurable gestures, including cancel from the device</td></tr>
-    <tr><td>During an SOS</td><td>Location sent by SMS</td><td>Live location every 5 s, 2-second audio clips, SMS and call fallback</td></tr>
-    <tr><td>Survey</td><td>61 responses</td><td>129 responses</td></tr>
+    <tr><th>Area</th><th>In the proposal</th><th>What we built</th><th>Why</th></tr>
+    <tr><td>Cellular</td><td>SIM800L 2G GSM module</td><td>SIMCom A7670G 4G LTE Cat 1: data and voice at the same time</td><td class="why">2G could not send data during a call, and 2G networks are being phased out</td></tr>
+    <tr><td>Controller</td><td>ESP32</td><td>ESP32-S3-Zero, smaller and lower power</td><td class="why">Fits a keychain-sized device and saves battery</td></tr>
+    <tr><td>SOS button</td><td>Fixed double press and hold</td><td>Three configurable gestures, including cancel from the device</td><td class="why">Survey: false alarms were a top concern; users asked to cancel from the device</td></tr>
+    <tr><td>During an SOS</td><td>Location sent by SMS</td><td>Live location every 5 s, 2-second audio clips, SMS and call fallback</td><td class="why">Contacts can follow the situation live; SMS and calls still work without internet</td></tr>
+    <tr><td>Survey</td><td>61 responses</td><td>129 responses</td><td class="why">A larger sample to confirm the requirements</td></tr>
   </table></div>
 </section>
 
@@ -387,7 +388,7 @@ table.cmp tr:hover td{background:rgba(255,255,255,.02)}
   <div class="sub">Click a step, or press <span class="mono" style="color:var(--yel)">Play</span> to walk through it.</div>
   <div class="pipe" id="pipe"></div>
   <div class="detail" id="pdet"></div>
-  <div style="margin-top:12px;display:flex;gap:10px;align-items:center"><button id="play" class="tabs" style="all:unset;cursor:pointer;background:var(--yel);color:#111;font:700 12px var(--sans);padding:8px 14px;border-radius:8px">▶ Play</button><span style="font-size:12px;color:var(--dim)">No data connection? The device falls back to SMS and a voice call on its own.</span></div>
+  <div style="margin-top:12px;display:flex;gap:10px;align-items:center"><button id="play" class="tabs" style="all:unset;cursor:pointer;background:var(--yel);color:#111;font:700 12px var(--sans);padding:8px 14px;border-radius:8px">▶ Play</button><span style="font-size:12px;color:var(--dim)">No internet? The device makes a normal phone call and sends SMS through its own SIM, on its own.</span></div>
 </section>
 
 <!-- 11 APP -->
@@ -517,7 +518,7 @@ $('#rings').innerHTML = R.map(r => `<div class="rcard"><svg width="78" height="7
 
 /* survey tabs */
 const Q = [
-  ['When a silent alert helps most', 'Multiple choice · respondents out of 129', [['Threatened or followed', 91], ['Travelling alone at night', 77], ['Unsafe public place', 73], ['Cannot safely use the phone', 68], ['Making noise increases danger', 50]], 'Being followed or alone at night: exactly when a silent hold matters.'],
+  ['When a silent alert helps most', 'Multiple choice · respondents out of 129', [['Threatened or followed', 91], ['Travelling alone at night', 77], ['Unsafe public place', 73], ['Cannot safely use the phone', 68], ['Making noise increases danger', 50]], 'Safety is not always loud. Most respondents identified situations involving threats, following, and travelling alone as moments when a discreet emergency alert could make the biggest difference.'],
   ['Preferred form of the device', 'Respondents out of 129', [['Keychain or necklace', 64], ['Wristband or watch', 57, 'g'], ['Other', 5, 'g'], ['Clip-on badge', 3, 'g']], '50% chose a carried keychain or necklace, matching our design.'],
   ['Biggest concerns', 'Respondents out of 129', [['Cost', 29], ['Battery life', 22], ['False alarms', 18], ['No major concerns', 18, 'g']], 'False alarms are why we added cancel from the button (hold 8 s).'],
   ['Would use or recommend SafeTag', 'Respondents out of 129', [['Yes', 97], ['Maybe', 28, 'g'], ['No', 4, 'g']], '75% would use or recommend it; only 3% said no.'],
@@ -533,7 +534,7 @@ $$('#stabs button').forEach(b => b.onclick = () => showQ(+b.dataset.i));
 /* architecture */
 const T = [
   ['Wearable device', 'Runs the SOS on its own: no phone is needed. It talks to the cloud over 4G and falls back to SMS and voice calls when there is no data.',
-    ['Detects the configured gestures on one button', 'Sends a 16-byte SOS event over MQTT, resent until acknowledged', 'Streams location every 5 s and 2-second audio clips', 'Calls and texts contacts directly when offline'],
+    ['Detects the configured gestures on one button', 'Sends a 16-byte SOS event over MQTT, resent until acknowledged', 'Streams location every 5 s and 2-second audio clips', 'No internet? It makes a normal phone call and sends SMS to contacts through its own SIM, like any mobile phone'],
     ['Fit the GPS antenna so location works', 'Microphone noise from the modem', 'Custom PCB, battery and enclosure'], 'in: button press · out: SOS event, location, audio over 4G'],
   ['Cloud backend', 'Receives everything the device sends, opens alerts and makes sure contacts are told, even if they do not respond at first.',
     ['Mosquitto MQTT broker with per-device login', 'FastAPI service for the app and device commands', 'Celery + Redis jobs for escalation and timers', 'Supabase PostgreSQL + PostGIS with row-level security'],
