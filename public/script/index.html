@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.png">
+<title>SafeTag Mid-Year Script</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap">
+<style>
+/* Layout: one reading column, a speaker filter bar, then slide-by-slide cards with the words to say. */
+:root {
+  --bg: #fbfaf6; --surface: #ffffff; --fg: #1d1b16; --muted: #6b665a; --line: #e6e1d4;
+  --accent: #b8860b; --accentbg: #fff4d1;
+  --mariha: #8a4bd8; --batool: #d04a7a; --haris: #1f7ae0; --aun: #1a9a6c;
+  --display: 'Space Grotesk', 'Segoe UI', Arial, sans-serif; --body: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121210; --surface: #1b1a17; --fg: #f1eee6; --muted: #a59f90; --line: #2e2c27;
+  --accent: #ffc20e; --accentbg: #2b2410;
+  --mariha: #b38af0; --batool: #f07aa3; --haris: #6eaaf5; --aun: #4cc99a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121210; --surface: #1b1a17; --fg: #f1eee6; --muted: #a59f90; --line: #2e2c27;
+  --accent: #ffc20e; --accentbg: #2b2410;
+  --mariha: #b38af0; --batool: #f07aa3; --haris: #6eaaf5; --aun: #4cc99a; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font: 700 30px/1.15 var(--display); text-wrap: balance; margin: 0 0 6px; }
+.lede { color: var(--muted); margin: 0 0 18px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+.meta b { color: var(--fg); font-weight: 600; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.bar button { font: 600 13px var(--body); padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+.bar button[aria-pressed="true"] { border-color: var(--fg); background: var(--fg); color: var(--bg); }
+.bar button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.m { --c: var(--mariha); } .b { --c: var(--batool); } .h { --c: var(--haris); } .a { --c: var(--aun); }
+.dot { background: var(--c, var(--muted)); }
+section.part { margin-top: 28px; }
+.who { display: flex; align-items: baseline; gap: 10px; margin: 0 0 4px; }
+.who h2 { font: 700 20px var(--display); margin: 0; color: var(--c); }
+.who span { font-size: 13px; color: var(--muted); }
+.slide { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 10px; padding: 14px 18px; margin-top: 12px; }
+.slide header { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; margin-bottom: 6px; }
+.num { font: 700 12px var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--c); }
+.slide h3 { font: 600 16px var(--body); margin: 0; }
+.time { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.say { margin: 8px 0 0; font-size: 17px; line-height: 1.65; max-width: 65ch; }
+.cue { display: block; margin: 8px 0 0; font-size: 13.5px; color: var(--muted); font-style: italic; }
+.cue::before { content: "On screen: "; font-style: normal; font-weight: 600; color: var(--accent); }
+.hand { margin: 10px 0 0; padding: 8px 12px; border-radius: 8px; background: var(--accentbg); font-size: 15px; }
+.hand::before { content: "Hand over: "; font-weight: 600; }
+.qa { margin-top: 36px; }
+.qa h2 { font: 700 22px var(--display); margin: 0 0 4px; }
+.qa details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; margin-top: 8px; }
+.qa summary { cursor: pointer; font-weight: 600; }
+.qa summary .dot { vertical-align: 1px; }
+.qa p { margin: 8px 0 2px; max-width: 65ch; }
+.tips { margin-top: 32px; padding: 14px 18px; border: 1px dashed var(--line); border-radius: 10px; }
+.tips h2 { font: 700 18px var(--display); margin: 0 0 6px; }
+.tips ul { margin: 0; padding-left: 20px; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: no-preference) { .slide { transition: opacity .2s; } }
+</style>
+<style>body{margin:0}*{box-sizing:border-box}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>SafeTag Mid-Year Script</h1>
+  <p class="lede">What each of us says, slide by slide, for the mid-year evaluation. Slide numbers match the deck at safetag-site.vercel.app/progress.</p>
+  <div class="meta"><span><b>Total</b> about 13 minutes</span><span><b>Slides</b> 17</span><span><b>Order</b> Mariha → Batool → Haris → Aun → Haris → Aun → Mariha</span></div>
+
+  <div class="bar" role="group" aria-label="Show lines for">
+    <button id="f-all" data-f="all" aria-pressed="true">Everyone</button>
+    <button id="f-m" data-f="m" class="m" aria-pressed="false"><span class="dot"></span>Mariha</button>
+    <button id="f-b" data-f="b" class="b" aria-pressed="false"><span class="dot"></span>Batool</button>
+    <button id="f-h" data-f="h" class="h" aria-pressed="false"><span class="dot"></span>Haris</button>
+    <button id="f-a" data-f="a" class="a" aria-pressed="false"><span class="dot"></span>Aun</button>
+  </div>
+
+  <!-- MARIHA: opening -->
+  <section class="part m" data-who="m">
+    <div class="who"><h2>Mariha</h2><span>Opening · about 2 min</span></div>
+
+    <article class="slide"><header><span class="num">Slide 1</span><h3>Title</h3><span class="time">0:30</span></header>
+      <p class="say">Assalam-o-Alaikum. We are group SE-23008, and our project is SafeTag, a personal safety wearable device and intelligent alert platform. Our advisor is Ms. Sana Fatima, and our external supervisor is Mr. Shaheer Shah from Zvolta. Today we will show you what we have built so far, what is working, and what is left.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 2</span><h3>Team</h3><span class="time">0:30</span></header>
+      <p class="say">We split the work by layer. I did the literature review, the research and the documentation, including the proposal and this report. Batool led the requirements and the user survey, the UI design and testing. Haris built the system architecture, the mobile app and the cloud backend. Aun built the hardware: the prototype and its firmware. We planned, reviewed and tested together.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 3</span><h3>Where we stand</h3><span class="time">1:00</span></header>
+      <p class="say">The problem is simple. When someone is in danger, the phone is often out of reach, the battery is dead, or there is no mobile data. SafeTag is a small device with one button that works on its own, without the phone. Today, all three parts are built and connected. The mobile app has its first release, the backend is deployed in the cloud, and the prototype sends an SOS over 4G. In numbers: 129 survey responses, 17 functional requirements, 40 design diagrams in the report, and 48 backend tests passing.</p>
+      <span class="cue">the four numbers count up after the slide opens.</span>
+      <p class="hand">"Batool will now tell you what the users told us."</p>
+    </article>
+  </section>
+
+  <!-- BATOOL: survey -->
+  <section class="part b" data-who="b">
+    <div class="who"><h2>Batool</h2><span>Survey · about 2.5 min</span></div>
+
+    <article class="slide"><header><span class="num">Slide 4</span><h3>Survey: 129 responses</h3><span class="time">0:50</span></header>
+      <p class="say">We ran an online survey from 22 August to 5 September and got 129 responses. Most were students between 18 and 24, who are our first users. The results were clear: 78% travel alone regularly, 75% have felt unsafe while travelling alone, 89% want the device to work without mobile internet, and 83% want a silent SOS mode.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 5</span><h3>What users need</h3><span class="time">0:50</span></header>
+      <p class="say">When we asked for the single most important feature, the top answer was working without internet, then live location, then silent SOS. These three became the core of SafeTag. That is why the device can call and send SMS through its own SIM, sends live location every five seconds during an SOS, and has a silent SOS on a three-second hold.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 6</span><h3>Situations, form and adoption</h3><span class="time">0:50</span></header>
+      <p class="say">Safety is not always loud. Most people said a silent alert matters most when they feel threatened or followed, or travel alone at night. Half preferred a keychain or necklace over a wristband, so we are not building a wristband. The main concerns were cost, battery life and false alarms, and that is why we added a way to cancel an SOS from the device itself. Overall, 75% said they would use or recommend SafeTag.</p>
+      <span class="cue">click the four tabs one by one while speaking.</span>
+      <p class="hand">"Haris will explain how we turned this into a system."</p>
+    </article>
+  </section>
+
+  <!-- HARIS: changes + architecture -->
+  <section class="part h" data-who="h">
+    <div class="who"><h2>Haris</h2><span>Changes and architecture · about 1.5 min</span></div>
+
+    <article class="slide"><header><span class="num">Slide 7</span><h3>What changed since the proposal</h3><span class="time">0:45</span></header>
+      <p class="say">Some decisions changed while building. We moved from a 2G module to a 4G LTE module, because 2G cannot send data during a call and 2G networks are being shut down. We used the smaller ESP32-S3 to fit a keychain-sized device. The button now has three gestures the user can change, including cancel. And during an SOS we now send live location and short audio clips, not just one SMS.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 8</span><h3>Architecture</h3><span class="time">0:45</span></header>
+      <p class="say">The system has three tiers. The device raises the SOS on its own over 4G. The cloud, on Railway and Supabase, receives it, creates the alert and makes sure contacts are told. The Flutter app is used by the wearer, the trusted contacts and the admin. If there is no internet at all, the device skips the cloud and calls and texts the contacts directly.</p>
+      <span class="cue">click Wearable device, Cloud backend and Mobile application in turn.</span>
+      <p class="hand">"Aun will show you the hardware."</p>
+    </article>
+  </section>
+
+  <!-- AUN: hardware + flow -->
+  <section class="part a" data-who="a">
+    <div class="who"><h2>Aun</h2><span>Hardware and SOS flow · about 2 min</span></div>
+
+    <article class="slide"><header><span class="num">Slide 9</span><h3>Vero board prototype</h3><span class="time">1:10</span></header>
+      <p class="say">This is our working prototype on a Vero board. It has the ESP32-S3 controller, the A7670G 4G module with its LTE antenna, an INMP441 microphone, status LEDs, a buzzer and the SOS button. It already sends an SOS over 4G, gets the server's acknowledgement, and falls back to SMS and a voice call. The red circle is the GPS connector. The GPS antenna is not fitted yet; once we connect it, location will work. We are also fixing noise on the microphone from the modem.</p>
+      <span class="cue">click the numbered dots on the photo, ending on the red GPS circle.</span>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 10</span><h3>How an SOS travels</h3><span class="time">0:50</span></header>
+      <p class="say">Here is the full path of an SOS. The wearer presses the button. The device sends a small 16-byte event over 4G and keeps resending it until the server confirms. The server opens one alert, pushes a notification to every contact, and escalates by SMS one contact at a time. Contacts then follow the live location and audio. It ends when a contact resolves it or the wearer cancels it.</p>
+      <span class="cue">press Play and let the six steps run.</span>
+      <p class="hand">"Haris will show the app and the backend."</p>
+    </article>
+  </section>
+
+  <!-- HARIS: app, button, backend -->
+  <section class="part h" data-who="h">
+    <div class="who"><h2>Haris</h2><span>App and backend · about 2.5 min</span></div>
+
+    <article class="slide"><header><span class="num">Slide 11</span><h3>The app</h3><span class="time">0:50</span></header>
+      <p class="say">These are real screens from our app. The wearer's home shows the SafeTag status and the SOS button. In settings, the wearer chooses their button gestures. Alert history keeps the recorded audio of each SOS. Trusted contacts are kept in priority order, safe zones alert contacts on entry and exit, and the admin panel shows users and devices.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 12</span><h3>Personalised SOS button</h3><span class="time">0:50</span></header>
+      <p class="say">This is new since the proposal. By default, a double press raises an audible SOS, holding for three seconds raises a silent one, and holding for eight seconds cancels it. The wearer can change each one in the app, and two actions can never share the same gesture. The setting is saved on the device too, so it works without a connection.</p>
+      <span class="cue">double-press the yellow button, then hold it for eight seconds to cancel. Change one dropdown to show the red warning.</span>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 13</span><h3>Backend</h3><span class="time">0:50</span></header>
+      <p class="say">The backend is deployed and tested. It runs three services: the MQTT broker, the API and the job service. The database has 13 tables protected by row-level security, so each person sees only their own data and that of the people who trust them. Each device logs in with its own credentials, and a location update is only 12 bytes, which keeps it fast on a weak signal. 48 automated tests pass.</p>
+      <p class="hand">"Aun will cover the problems we faced."</p>
+    </article>
+  </section>
+
+  <!-- AUN: challenges -->
+  <section class="part a" data-who="a">
+    <div class="who"><h2>Aun</h2><span>Challenges · about 1 min</span></div>
+
+    <article class="slide"><header><span class="num">Slide 14</span><h3>Challenges</h3><span class="time">1:00</span></header>
+      <p class="say">We hit real problems. The 2G module could not send data during a call, so we moved to 4G. The modem rejected our binary packets until we configured it for binary data. The alarm drowned out the wearer's voice, so the buzzer now stops after 15 seconds. The modem reset under load, and the fix is a 2-amp supply with a capacitor. Two items are still open: fitting the GPS antenna, and the microphone noise.</p>
+      <p class="hand">"Mariha will close with our plan."</p>
+    </article>
+  </section>
+
+  <!-- MARIHA: plan + close -->
+  <section class="part m" data-who="m">
+    <div class="who"><h2>Mariha</h2><span>Plan and close · about 1.5 min</span></div>
+
+    <article class="slide"><header><span class="num">Slide 15</span><h3>Work plan</h3><span class="time">0:30</span></header>
+      <p class="say">On our plan, requirements, design and the first release of the backend and app are done. Hardware, testing and refinement from your feedback are in progress, and deployment and the pilot come in March and April.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 16</span><h3>Next steps</h3><span class="time">0:40</span></header>
+      <p class="say">Next, we fit the GPS antenna and fix the microphone. Then we make a custom PCB and a 3D-printed enclosure with a battery, build five pilot devices, field-test alert time, battery life and coverage across Karachi, and run a supervised pilot with students and commuters.</p>
+    </article>
+
+    <article class="slide"><header><span class="num">Slide 17</span><h3>Thank you</h3><span class="time">0:20</span></header>
+      <p class="say">SafeTag: your safety, our responsibility. Thank you. We are happy to take your questions, and we can show the device and the app live.</p>
+    </article>
+  </section>
+
+  <section class="qa">
+    <h2>Likely questions</h2>
+    <p class="lede">The coloured dot shows who answers. Keep answers short.</p>
+
+    <details class="h" data-who="h"><summary><span class="dot"></span>Why a device? Why not just an app?</summary>
+      <p>In danger, the phone is often out of reach, locked, snatched or without data. In our survey, 89% wanted it to work without internet. The device raises the alert on its own with one button, and falls back to calls and SMS.</p></details>
+
+    <details class="a" data-who="a"><summary><span class="dot"></span>How does it work without internet?</summary>
+      <p>The device has its own SIM. If the server does not confirm the SOS, it sends SMS and makes a normal voice call to the contacts, like any mobile phone. Their numbers are stored on the device.</p></details>
+
+    <details class="a" data-who="a"><summary><span class="dot"></span>Is location working?</summary>
+      <p>Not yet on the prototype. The 4G module has built-in GPS, but the GPS antenna is not fitted. Once we connect it, location will work. Everything else in the SOS path already works.</p></details>
+
+    <details class="a" data-who="a"><summary><span class="dot"></span>How long will the battery last?</summary>
+      <p>Our target is several days of normal use. The device sleeps between reports and wakes instantly on a button press. We have not measured it yet; that is part of field testing after the battery and enclosure stage.</p></details>
+
+    <details class="b" data-who="b"><summary><span class="dot"></span>What about false alarms?</summary>
+      <p>False alarms were a top concern in the survey. The wearer can cancel from the device by holding the button, or from the app, and contacts are told the wearer is safe. Gestures can also be changed so they do not trigger by accident.</p></details>
+
+    <details class="m" data-who="m"><summary><span class="dot"></span>How is this different from a smartwatch or existing apps?</summary>
+      <p>Smartwatch SOS needs the phone or an expensive LTE watch, and most apps need the phone and data. Research devices usually send one SMS with no follow-up. SafeTag combines a cheap standalone device, escalation through contacts, live location and audio, and an app for families.</p></details>
+
+    <details class="h" data-who="h"><summary><span class="dot"></span>How do you keep data private and secure?</summary>
+      <p>Row-level security in the database means each user sees only their own data and that of the people they trust. Each device has its own login and can only use its own MQTT topics. Location is sent often only during an SOS or a journey.</p></details>
+
+    <details class="m" data-who="m"><summary><span class="dot"></span>What will it cost?</summary>
+      <p>Our target is under Rs 7,500 per device, working with an ordinary prepaid SIM. Cost was the top concern in the survey, so we chose parts with that limit in mind.</p></details>
+
+    <details class="b" data-who="b"><summary><span class="dot"></span>Your survey is mostly students. Is that a problem?</summary>
+      <p>Students and young commuters are our first target group, so it fits. For elderly users we took their needs from the literature, and the pilot will include more types of users.</p></details>
+  </section>
+
+  <div class="tips">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Open the deck in Chrome and press F for fullscreen. Use the arrow keys to move.</li>
+      <li>Speak to the panel, not the screen. Each person stands near the laptop for their part.</li>
+      <li>If a question is about your part, answer it even if it was asked to someone else.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+(function () {
+  var btns = document.querySelectorAll('.bar button');
+  var items = document.querySelectorAll('[data-who]');
+  function show(f) {
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.f === f)); });
+    items.forEach(function (el) { el.hidden = !(f === 'all' || el.dataset.who === f); });
+    try { localStorage.setItem('script-filter', f); } catch (e) {}
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.f); }); });
+  var saved = 'all';
+  try { saved = localStorage.getItem('script-filter') || 'all'; } catch (e) {}
+  show(saved);
+})();
+</script>
+
+</body>
+</html>
