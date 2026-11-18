@@ -177,7 +177,7 @@ section.part { margin-top: 28px; }
     <div class="who"><h2>Haris</h2><span>Backend · about 1 min</span></div>
 
     <article class="slide"><header><span class="num">Slide 13</span><h3>Backend</h3><span class="time">1:00</span></header>
-      <p class="say">Everything you just saw runs on our backend, which is deployed and tested. It has three services: the MQTT broker that talks to the device, the API for the app, and the job service that handles escalation and timers. The database has 13 tables protected by row-level security, so each person sees only their own data and that of the people who trust them. Each device logs in with its own credentials. A location update is only 12 bytes, so it stays fast even on a weak signal. 48 automated tests pass.</p>
+      <p class="say">Everything you just saw runs on our backend, which is deployed and tested. It has four services: the MQTT broker that talks to the device, the API for the app, the job service that handles escalation and timers, and Redis, which holds the job queue. The database has 14 tables protected by row-level security, so each person sees only their own data and that of the people who trust them. Each device logs in with its own credentials. A location update is only 12 bytes, so it stays fast even on a weak signal. 48 automated tests pass.</p>
       <p class="hand">"Aun will cover the problems we faced."</p>
     </article>
   </section>
