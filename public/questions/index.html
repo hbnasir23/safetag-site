@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.png">
+<title>SafeTag Viva Prep</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; search + topic chips on top; each topic is a list of questions that open into answers. */
+:root {
+  --bg: #fbfaf6; --surface: #ffffff; --fg: #1d1b16; --muted: #6b665a; --line: #e6e1d4;
+  --accent: #a87a00; --accentbg: #fff4d1; --code: #f3efe4;
+  --display: 'Space Grotesk', 'Segoe UI', Arial, sans-serif; --body: 'Inter', 'Segoe UI', Arial, sans-serif; --mono: 'JetBrains Mono', Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121210; --surface: #1b1a17; --fg: #f1eee6; --muted: #a59f90; --line: #2e2c27;
+  --accent: #ffc20e; --accentbg: #2b2410; --code: #26241f; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121210; --surface: #1b1a17; --fg: #f1eee6; --muted: #a59f90; --line: #2e2c27;
+  --accent: #ffc20e; --accentbg: #2b2410; --code: #26241f; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); }
+.wrap { max-width: 800px; margin: 0 auto; padding-block: 28px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font: 700 30px/1.15 var(--display); margin: 0 0 6px; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0 0 16px; max-width: 65ch; }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding: 10px 0 12px; border-bottom: 1px solid var(--line); display: grid; gap: 10px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+#q { width: 100%; font: 16px var(--body); padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+#q:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips a { font: 600 12.5px var(--body); padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); text-decoration: none; }
+.chips a:hover { border-color: var(--accent); }
+.tools { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.tools button { font: 600 12.5px var(--body); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+section { margin-top: 30px; scroll-margin-top: 150px; }
+h2 { font: 700 22px var(--display); margin: 0 0 4px; }
+.sub { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; margin-top: 8px; }
+details[open] { border-color: var(--accent); }
+summary { cursor: pointer; font-weight: 600; line-height: 1.45; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+details p, details ul { margin: 8px 0 2px; max-width: 68ch; }
+details ul { padding-left: 20px; }
+details li { margin: 3px 0; }
+code { font: 13.5px var(--mono); background: var(--code); padding: 1px 5px; border-radius: 4px; }
+.tbl { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; font-size: 14px; min-width: 520px; width: 100%; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; }
+td:first-child { font-family: var(--mono); font-size: 13px; white-space: nowrap; }
+.key { background: var(--accentbg); border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-size: 15px; }
+.key::before { content: "One line: "; font-weight: 700; }
+.none { color: var(--muted); margin-top: 16px; }
+[hidden] { display: none !important; }
+</style>
+<style>body{margin:0}*{box-sizing:border-box}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>SafeTag Viva Prep</h1>
+  <p class="lede">Every question the panel could ask about the cloud, the database, the hardware and the app, with short answers you can say out loud. Open a question to see its answer. The "One line" box is what to say if you only get a few seconds.</p>
+
+  <div class="top">
+    <input id="q" type="search" placeholder="Search, e.g. MQTT, PostGIS, battery, A7670G" aria-label="Search questions">
+    <nav class="chips" aria-label="Topics">
+      <a href="#big">Big picture</a><a href="#cloud">Cloud</a><a href="#changes">Cloud changes</a><a href="#db">Database</a><a href="#whydb">Why this database</a><a href="#hw">Hardware parts</a><a href="#whyhw">Why this hardware</a><a href="#data">Data and packets</a><a href="#sos">SOS logic</a><a href="#app">App</a><a href="#sec">Security</a><a href="#weak">Weak spots</a><a href="#nums">Numbers</a>
+    </nav>
+    <div class="tools"><button id="openall">Open all</button><button id="closeall">Close all</button><span id="count"></span></div>
+  </div>
+
+  <!-- BIG PICTURE -->
+  <section id="big"><h2>Big picture</h2><p class="sub">Start here. These come up in every viva.</p>
+    <details><summary>Explain SafeTag in 30 seconds.</summary>
+      <p>SafeTag is a small wearable with one button that raises an SOS on its own, without the phone. It has its own 4G SIM. It sends the alert to our cloud, which notifies the wearer's trusted contacts by push and SMS, one contact at a time, until someone responds. Contacts see the live location and hear live audio from the device. If there is no internet, the device itself sends SMS and calls the contacts.</p>
+      <p class="key">A one-button wearable with its own SIM that alerts your trusted contacts, with or without internet.</p></details>
+    <details><summary>What are the three layers, and what does each do?</summary>
+      <ul><li><b>Device:</b> ESP32-S3 + A7670G 4G modem. Detects the button gesture, sends the SOS, streams location and audio, falls back to SMS and call.</li>
+      <li><b>Cloud:</b> MQTT broker, FastAPI and Celery jobs on Railway, plus Supabase (database, login, storage, realtime). Receives packets, creates alerts, escalates.</li>
+      <li><b>App:</b> one Flutter app with three roles: wearer, trusted contact and admin.</li></ul></details>
+    <details><summary>Why not just make a phone app?</summary>
+      <p>In an emergency the phone is often in a bag, locked, snatched, out of battery or without data. Opening an app also takes time and can be seen by an attacker. A physical button can be pressed in a second, even silently, and the device has its own SIM, so it does not depend on the phone at all. The app is still there for setup, contacts and following an alert.</p></details>
+    <details><summary>How is this different from a smartwatch SOS or apps like Life360?</summary>
+      <p>Smartwatch SOS needs either the paired phone or an expensive LTE watch, and only calls one number. Apps like Life360 need the phone and data. Research prototypes usually send a single SMS with no follow-up. SafeTag combines a low-cost standalone device, escalation through a chain of contacts until someone responds, live location and audio, an offline SMS and call fallback, and an app for families.</p></details>
+    <details><summary>What is new since the proposal?</summary>
+      <ul><li>2G SIM800L replaced by the 4G A7670G.</li><li>ESP32 replaced by the smaller ESP32-S3-Zero.</li><li>Three button gestures the user can change, including cancel from the device.</li><li>Live audio during an SOS, recorded and kept with the alert.</li><li>Cloud backend deployed on Railway; device talks binary MQTT.</li><li>Survey grew from 64 to 129 responses.</li></ul></details>
+    <details><summary>Who are the users?</summary>
+      <p>The wearer (students, commuters, women travelling alone, elderly people), their trusted contacts (family and friends who receive alerts) and an administrator who manages users and devices. Our first target group is students and young commuters in Karachi.</p></details>
+  </section>
+
+  <!-- CLOUD -->
+  <section id="cloud"><h2>What we did in the cloud</h2><p class="sub">Two platforms: Supabase for data, login and storage; Railway for the services that talk to the device.</p>
+    <details><summary>Draw the cloud for us. What runs where?</summary>
+      <div class="tbl"><table><tr><th>Piece</th><th>Where</th><th>Job</th></tr>
+      <tr><td>mosquitto</td><td>Railway</td><td>MQTT broker. Every device keeps a connection open to it. Per-device login and topic rules.</td></tr>
+      <tr><td>api</td><td>Railway</td><td>FastAPI. Subscribes to all device topics, decodes packets, writes to the database, sends commands back, REST endpoints and a WebSocket for live location.</td></tr>
+      <tr><td>jobs</td><td>Railway</td><td>Celery worker + scheduler. Escalation timers, SMS, reminder pushes, journey dead-man switch, marking silent devices offline.</td></tr>
+      <tr><td>redis</td><td>Railway</td><td>Queue for the jobs, and live-location messages between processes.</td></tr>
+      <tr><td>Postgres + PostGIS</td><td>Supabase</td><td>All data: users, devices, contacts, alerts, locations, journeys.</td></tr>
+      <tr><td>Auth</td><td>Supabase</td><td>Sign-up, login, email verification, JWT tokens the app and API use.</td></tr>
+      <tr><td>Storage</td><td>Supabase</td><td>Private <code>sos-audio</code> bucket for SOS recordings.</td></tr>
+      <tr><td>Realtime</td><td>Supabase</td><td>Pushes database changes to the app instantly (new alert, status changes).</td></tr>
+      <tr><td>Edge Functions</td><td>Supabase</td><td><code>notify-alert</code> (first push), <code>claim</code> (link a device), <code>invite</code> and <code>invite-contact</code> (contact invite links).</td></tr>
+      <tr><td>FCM</td><td>Google</td><td>Push notifications to Android and iOS.</td></tr>
+      <tr><td>Twilio</td><td>Twilio</td><td>Cloud SMS to contacts who do not have the app.</td></tr></table></div></details>
+    <details><summary>What is MQTT and why did you use it instead of HTTP?</summary>
+      <p>MQTT is a lightweight publish/subscribe protocol built for IoT. The device keeps one connection open, so:</p>
+      <ul><li>Each message has a 2-byte header instead of hundreds of bytes of HTTP headers, which matters on a weak 4G signal and for battery.</li>
+      <li>The server can push a command to the device instantly (acknowledge SOS, locate, new settings). With HTTP the device would have to keep polling.</li>
+      <li>QoS 1 means a message is delivered at least once, so an SOS is not silently lost.</li>
+      <li>"Last will": if the device disappears, the broker publishes "offline" for it automatically.</li></ul>
+      <p class="key">Small, always-connected, two-way and reliable, which HTTP is not on a battery device.</p></details>
+    <details><summary>Why Mosquitto as the broker?</summary>
+      <p>It is open source, very light, runs in one small Docker container and supports username/password login with a per-user topic access list. That lets each device log in with its own serial and use only its own topics. A managed broker (HiveMQ Cloud, AWS IoT) would cost money or lock us into one cloud.</p></details>
+    <details><summary>What are the MQTT topics?</summary>
+      <p>Every topic is <code>safetag/v1/{serial}/{kind}</code>. The device publishes <code>loc</code>, <code>telemetry</code>, <code>event</code> (SOS), <code>status</code>, <code>audio</code> and <code>ack</code>, and subscribes to <code>cmd</code> for commands from the server. <code>v1</code> is the protocol version, so a future format can run side by side.</p></details>
+    <details><summary>Why FastAPI and Python for the backend?</summary>
+      <p>FastAPI is fast, asynchronous and gives REST and WebSocket in one service, with automatic API docs. Python has mature libraries for MQTT (paho), Postgres (psycopg), Celery, Firebase and Twilio, and it is quick to test: our protocol and alert logic have 48 automated tests.</p></details>
+    <details><summary>Why Celery and Redis? Why not just do it in the API?</summary>
+      <p>Escalation is time-based: SMS contact 1 now, contact 2 after a few minutes, and so on. A journey alert fires if the wearer has not arrived by the deadline, and devices silent for 5 minutes are marked offline. These are scheduled background jobs. Celery runs them, and Redis holds the queue, so the timers survive a restart of the API. Doing it inside the API would lose timers whenever the API restarts and would block requests.</p></details>
+    <details><summary>Why Railway? Why not Vercel, Firebase Functions or Supabase only?</summary>
+      <ul><li>The broker needs a raw TCP port that stays open 24/7. Serverless platforms (Vercel, Supabase Edge Functions, Firebase Functions) only handle short HTTP requests and cannot hold an MQTT connection.</li>
+      <li>Railway runs our Docker containers as long-running services, gives a TCP proxy for MQTT, deploys straight from GitHub and is cheap for a student project.</li>
+      <li>The same Docker images run on a laptop with <code>docker compose</code>, so we test locally exactly what runs in the cloud.</li></ul></details>
+    <details><summary>Why Docker?</summary>
+      <p>Each service is a container with everything it needs, so it runs the same on every laptop and on Railway. One command starts the whole backend locally for testing, including the broker.</p></details>
+    <details><summary>Why Supabase instead of building our own server for login and data?</summary>
+      <p>Supabase gives a real Postgres database with authentication, row-level security, file storage, realtime updates and serverless functions in one place, with an official Flutter SDK. Building login, password reset and email verification ourselves would take weeks and be less secure. It also has a free tier.</p></details>
+    <details><summary>How does a notification reach a contact?</summary>
+      <ul><li>The backend inserts the alert. A database trigger calls the <code>notify-alert</code> Edge Function, which sends the first push through Firebase Cloud Messaging to every contact who has the app.</li>
+      <li>The jobs service then SMSes contact #1 through Twilio, and every few minutes the next contact (SMS + reminder push) until someone taps "I'm responding", the alert is resolved, or the list runs out. Muted contacts are skipped.</li></ul></details>
+    <details><summary>There are two kinds of SMS. What is the difference?</summary>
+      <ul><li><b>Cloud SMS (Twilio):</b> the device is online and the alert reached the server, but a contact does not have the app. The server sends the SMS.</li>
+      <li><b>Device SMS (its own SIM):</b> the device has no data, so the server never got the SOS. After 30 seconds without confirmation, the device itself SMSes every saved contact and rings contact #1.</li></ul></details>
+    <details><summary>How does live location reach the contact's map?</summary>
+      <p>The device sends a 12-byte location packet every 5 seconds during an SOS. The API decodes it, saves it in <code>location_pings</code>, and publishes it on Redis. The app gets it through the API's WebSocket (<code>/v1/live/{device_id}</code>) and Supabase Realtime, so the marker moves without refreshing.</p></details>
+    <details><summary>How does live audio work?</summary>
+      <p>During an SOS the device records its INMP441 mic at 8 kHz, compresses it with IMA ADPCM (4 bits per sample, so 4× smaller) and sends 2-second chunks over MQTT. The API stores each chunk in the private <code>sos-audio</code> bucket and records it in <code>alert_audio_segments</code>. Contacts play the chunks in order in the app, almost live, and the full recording stays with the alert.</p></details>
+    <details><summary>How do you know the cloud is healthy?</summary>
+      <p>The API has a <code>/health</code> endpoint that checks the database, Redis and the MQTT connection. The jobs service logs its sweeps every 10 seconds, and Railway restarts a service automatically if it crashes.</p></details>
+  </section>
+
+  <!-- CLOUD CHANGES -->
+  <section id="changes"><h2>Every change in the cloud, in order</h2><p class="sub">If asked "how did the backend evolve?" walk through this timeline.</p>
+    <details><summary>Timeline of cloud changes (Sept to Nov 2026)</summary>
+      <div class="tbl"><table><tr><th>When</th><th>Change</th><th>Why</th></tr>
+      <tr><td>Sept 25</td><td>App only on Supabase: tables, login, RLS. A database trigger + <code>notify-alert</code> Edge Function sends the first push.</td><td>Fastest way to get alerts working from the phone.</td></tr>
+      <tr><td>Sept 26</td><td>Python backend added, with a <code>backend_alert_jobs</code> table for escalation.</td><td>Escalation needs timers, which Edge Functions cannot run.</td></tr>
+      <tr><td>Oct 9</td><td>Real Mosquitto MQTT broker in Docker.</td><td>The device needs a persistent two-way connection.</td></tr>
+      <tr><td>Oct 11</td><td>Backend moved to Railway as separate services (broker, api, jobs, redis), secrets in environment variables.</td><td>Has to run 24/7 with a public TCP port for devices.</td></tr>
+      <tr><td>Oct 12</td><td>JSON messages replaced by fixed binary packets. Devices linked by claim code.</td><td>12 bytes instead of ~80 per location; secure device ownership.</td></tr>
+      <tr><td>Nov 8</td><td>SOS live audio: <code>alert_audio_segments</code> table, private <code>sos-audio</code> bucket, <code>SET_CONTACTS</code> and <code>SOS_CANCELLED</code> commands.</td><td>Contacts can hear what is happening; device keeps numbers for offline SMS.</td></tr>
+      <tr><td>Nov 9</td><td>Escalation changed to one contact at a time.</td><td>Testing feedback: avoids everyone being spammed at once.</td></tr>
+      <tr><td>Nov 17</td><td>Gesture columns on <code>devices</code> + <code>SET_BUTTONS</code>; cancel from the tag; <code>SET_WIFI</code>.</td><td>Personalised button (FR-17); false alarms were a survey concern.</td></tr></table></div></details>
+    <details><summary>Why did you move from JSON to binary packets?</summary>
+      <p>A location in JSON is around 80 bytes; our binary packet is 12. On a weak signal and a metered SIM, smaller packets send faster and cost less data and battery. The ESP32 can send a packed C struct directly, and every packet starts with a version byte so we can change the format later.</p></details>
+    <details><summary>Why did you need Railway if you already had Supabase?</summary>
+      <p>Supabase Edge Functions only run for a short request. They cannot keep the MQTT connection with thousands of devices open, and cannot run timers for escalation. So Supabase stays the database and login, and Railway runs the always-on parts.</p></details>
+  </section>
+
+  <!-- DATABASE -->
+  <section id="db"><h2>The database, table by table</h2><p class="sub">14 tables in Postgres on Supabase. Every one has row-level security switched on.</p>
+    <details><summary>List the tables and what each stores.</summary>
+      <div class="tbl"><table><tr><th>Table</th><th>Stores</th></tr>
+      <tr><td>users</td><td>Profile linked to the Supabase login: name, phone, photo, role (user/admin), push token.</td></tr>
+      <tr><td>devices</td><td>Each SafeTag (or the phone acting as one): owner, serial, battery, signal, last seen, online status, button gestures.</td></tr>
+      <tr><td>device_registry</td><td>Every manufactured serial and its claim code, so only real devices can be linked.</td></tr>
+      <tr><td>trusted_contacts</td><td>Who protects whom, the priority order, relation, permissions, muted flag.</td></tr>
+      <tr><td>contact_invites</td><td>Invite and "watch me" links sent to contacts who do not have an account yet.</td></tr>
+      <tr><td>alerts</td><td>Every SOS: type (audible, silent, journey, route), status, location, who responded, timestamps.</td></tr>
+      <tr><td>backend_alert_jobs</td><td>Escalation state per alert: which contact is next and when.</td></tr>
+      <tr><td>notification_logs</td><td>Every push and SMS sent, to whom and whether it succeeded.</td></tr>
+      <tr><td>alert_audio_segments</td><td>Each 2-second audio chunk of an SOS and where it is in storage.</td></tr>
+      <tr><td>location_pings</td><td>Location history from devices and phones (latitude, longitude, accuracy, speed).</td></tr>
+      <tr><td>safe_zones</td><td>Places like home or university: centre point and radius.</td></tr>
+      <tr><td>zone_events</td><td>Each time the wearer enters or leaves a safe zone.</td></tr>
+      <tr><td>saved_routes</td><td>Planned routes and the allowed distance from them.</td></tr>
+      <tr><td>journeys</td><td>Each journey: route, expected arrival, grace period, status (active, arrived, escalated).</td></tr></table></div></details>
+    <details><summary>How are the tables related?</summary>
+      <p>A user owns devices, safe zones, routes and journeys. <code>trusted_contacts</code> links two users (the wearer and the contact), so it is many-to-many. An alert belongs to a user and optionally a device; its audio segments, notification logs and escalation job hang off the alert. Location pings belong to a device. The ER diagram is Figure 4.40 in the report.</p></details>
+    <details><summary>What is PostGIS and where do you use it?</summary>
+      <p>PostGIS is the geography extension for Postgres. We use <code>ST_DWithin</code> on geography points to check, on the server, whether a device's location is inside a safe zone's radius, so zone entry and exit work even when the phone is off. Geography types measure real distances in metres on the earth's surface.</p></details>
+    <details><summary>What is row-level security (RLS)?</summary>
+      <p>RLS is a rule in the database itself that decides which rows each logged-in user may read or change. Our app talks to Supabase directly, so even if someone tampered with the app, the database would still only return their own data and the data of people who chose them as a trusted contact. Helper functions such as <code>contact_can</code> and <code>device_owner</code> keep these rules in one place.</p></details>
+    <details><summary>What triggers and database functions did you write?</summary>
+      <ul><li><code>on_alert_created</code> trigger: calls the <code>notify-alert</code> function to push the first notification.</li>
+      <li><code>handle_new_user</code>: creates the profile row when someone signs up.</li>
+      <li><code>relink_contacts_for_user</code>: links pending invites when the invited person joins.</li>
+      <li><code>claim_device</code>: links a device to its owner using the claim code.</li>
+      <li><code>guard_device_identity</code>: stops anyone changing a device's serial or owner directly.</li>
+      <li><code>can_access_alert_audio</code> / <code>can_upload_alert_audio</code>: who may play or upload SOS recordings.</li></ul></details>
+    <details><summary>How do you stop the same SOS creating two alerts?</summary>
+      <p>Every button press gets a random event ID. The device resends the same packet every 5 seconds until it is confirmed. The server records each event ID once, so repeats are ignored and exactly one alert is created.</p></details>
+    <details><summary>Where are the SOS recordings stored, and who can hear them?</summary>
+      <p>In a private Supabase Storage bucket, <code>sos-audio</code>. Only the wearer and their trusted contacts for that alert can play them; the access rule is checked by <code>can_access_alert_audio</code>.</p></details>
+    <details><summary>How do you change the database safely?</summary>
+      <p>Every change is a numbered SQL migration file in the repository (<code>supabase/migrations</code>), so the history is tracked in git and can be applied to a new project in order.</p></details>
+  </section>
+
+  <!-- WHY DB -->
+  <section id="whydb"><h2>Why this database</h2><p class="sub">The "why not Firebase / MongoDB" questions.</p>
+    <details><summary>Why PostgreSQL and not Firebase Firestore?</summary>
+      <ul><li>Our data is relational: users, contacts between users, alerts, devices. Postgres handles joins and many-to-many links naturally; Firestore has no joins.</li>
+      <li>Security rules live in the database as RLS, written in SQL, next to the data.</li>
+      <li>PostGIS gives real geographic queries (is this point within 250 m of the zone?). Firestore has no proper radius queries.</li>
+      <li>Constraints and transactions guarantee things like "one alert per event".</li></ul>
+      <p class="key">Relational data, real geo queries and security inside the database.</p></details>
+    <details><summary>Why not MongoDB?</summary>
+      <p>Same reasons: our data has many relationships and we need strict rules on who sees what. MongoDB would need us to build joins and access rules in our own code, and geo support is weaker than PostGIS.</p></details>
+    <details><summary>Why not MySQL?</summary>
+      <p>Postgres has PostGIS, row-level security and realtime through Supabase. MySQL has no built-in row-level security, and we would have to host and secure it ourselves.</p></details>
+    <details><summary>Will it scale?</summary>
+      <p>Postgres handles millions of rows easily. Location pings are the biggest table and are indexed by device and time; old pings can be archived. The broker and API are separate containers, so more instances can be added as devices grow.</p></details>
+  </section>
+
+  <!-- HARDWARE -->
+  <section id="hw"><h2>Every hardware part</h2><p class="sub">The bench prototype on the Vero board.</p>
+    <details><summary>List the components and what each does.</summary>
+      <div class="tbl"><table><tr><th>Part</th><th>Job</th><th>Connection</th></tr>
+      <tr><td>ESP32-S3-Zero</td><td>The brain: reads the button, runs the SOS logic, records audio, talks to the modem.</td><td>—</td></tr>
+      <tr><td>A7670G</td><td>4G LTE Cat 1 modem: mobile data for MQTT, SMS, voice calls and GNSS (GPS).</td><td>UART, GPIO 5 / 6, 115200 baud</td></tr>
+      <tr><td>LTE antenna</td><td>Full-band flexible antenna for the modem.</td><td>u.FL on the modem</td></tr>
+      <tr><td>GPS antenna</td><td>Not fitted yet; plugs into the modem's GPS connector.</td><td>u.FL "GPS"</td></tr>
+      <tr><td>INMP441</td><td>Digital MEMS microphone for SOS audio.</td><td>I2S, GPIO 7 / 8 / 9</td></tr>
+      <tr><td>Push button</td><td>The SOS button: presses and holds.</td><td>GPIO 10 to GND, internal pull-up</td></tr>
+      <tr><td>Active buzzer</td><td>Alarm during an audible SOS.</td><td>GPIO 11</td></tr>
+      <tr><td>Yellow LED</td><td>Status: blinking = connecting, steady = online.</td><td>GPIO 3</td></tr>
+      <tr><td>Red LED</td><td>Audible SOS indicator.</td><td>GPIO 4</td></tr>
+      <tr><td>SIM card</td><td>Any local prepaid SIM; the APN is picked automatically for Jazz, Zong, Ufone or Telenor.</td><td>Slot on the modem</td></tr>
+      <tr><td>Power</td><td>Bench: 5 V / 2 A supply. Final: 3.7 V Li-Po battery with USB-C charging and protection.</td><td>—</td></tr></table></div></details>
+    <details><summary>How does the ESP32 talk to the modem?</summary>
+      <p>Over a serial UART at 115200 baud using AT commands. The A7670G has its own MQTT client built in, so the ESP32 tells it to connect, subscribe and publish; the modem handles the network and TCP.</p></details>
+    <details><summary>What is I2S and why is the mic on it?</summary>
+      <p>I2S is a digital audio bus. The INMP441 converts sound to digital inside the mic, so the signal travels as data and does not pick up electrical noise on the wires the way an analog mic does. The ESP32-S3 has I2S hardware built in.</p></details>
+    <details><summary>Why does it need a 2 A power supply?</summary>
+      <p>When the 4G modem transmits, it draws bursts of up to about 2 A. A laptop USB port cannot supply that, the voltage drops and the ESP32 resets. A 5 V / 2 A supply with a 470 µF capacitor near the modem smooths these bursts.</p></details>
+    <details><summary>What do the lights and sounds mean?</summary>
+      <ul><li>One short beep at start-up.</li><li>Yellow blinking = connecting, steady = online, short blip every 2 s = no network.</li><li>Audible SOS: buzzer and red LED for 15 s, then quiet so the mic can hear the wearer.</li><li>Silent SOS: nothing at all.</li><li>Off route: short buzz; route alert sent to contacts: three long buzzes.</li></ul></details>
+    <details><summary>How is Wi-Fi used?</summary>
+      <p>The ESP32-S3 has Wi-Fi. When a saved network is in range, the tag uses it for data instead of mobile data, which saves money and battery. SMS and calls always use the SIM. The network is set from the app or from a setup hotspot on the tag, and the Wi-Fi password is never stored on our server.</p></details>
+    <details><summary>What happens next with the hardware?</summary>
+      <p>Fit the GPS antenna, fix the mic noise, then design a custom PCB, add the Li-Po battery and charger, and 3D-print a keychain-sized enclosure. Then build five pilot devices.</p></details>
+  </section>
+
+  <!-- WHY HW -->
+  <section id="whyhw"><h2>Why this hardware and not another</h2><p class="sub">Each choice and the alternatives we rejected.</p>
+    <details><summary>Why the A7670G and not the SIM800L you proposed?</summary>
+      <ul><li>The SIM800L is 2G only. 2G networks are being shut down in many countries, and coverage is falling.</li>
+      <li>On 2G you cannot use data during a voice call, so live location and audio would stop during the fallback call.</li>
+      <li>The A7670G is 4G LTE Cat 1: faster, data and voice together, and it has GNSS (GPS) built in, so we do not need a separate GPS module.</li>
+      <li>It also has a built-in MQTT client, which keeps the ESP32 code simple.</li></ul>
+      <p class="key">2G is dying and cannot do data during a call; the A7670G is 4G with GPS built in.</p></details>
+    <details><summary>Why LTE Cat 1 and not NB-IoT, LTE-M or LoRa?</summary>
+      <ul><li><b>NB-IoT / LTE-M:</b> very low power, but coverage in Pakistan is limited and they are poor at voice calls, which our fallback needs.</li>
+      <li><b>LoRa:</b> needs our own gateways; no coverage across a city.</li>
+      <li><b>LTE Cat 4 (e.g. SIM7600):</b> faster than we need, costs more and uses more power.</li>
+      <li>Cat 1 works on normal 4G networks everywhere a phone works, with SMS and voice.</li></ul></details>
+    <details><summary>Why not Bluetooth to the phone, like many panic buttons?</summary>
+      <p>Then the device only works if the phone is nearby, charged, connected and has data. That is exactly the dependence we wanted to remove. The survey showed 89% want it to work without mobile internet.</p></details>
+    <details><summary>Why the ESP32-S3-Zero and not a normal ESP32 or an Arduino?</summary>
+      <ul><li>It is tiny (about 24 × 18 mm), which fits a keychain-sized device.</li>
+      <li>Native USB, so no extra USB chip, less power and less space.</li>
+      <li>Dual-core 240 MHz with enough RAM to compress audio and queue it when offline.</li>
+      <li>Built-in Wi-Fi, I2S for the digital mic, and deep sleep for battery life.</li>
+      <li>An Arduino Uno or Nano has far too little RAM and no Wi-Fi.</li></ul></details>
+    <details><summary>Why the INMP441 and not a cheap electret microphone?</summary>
+      <p>The INMP441 is digital (I2S), so it does not pick up noise from the modem's radio on the wires and needs no amplifier or ADC. An electret mic is analog and needs an amplifier circuit, and it picks up interference.</p></details>
+    <details><summary>Why no separate GPS module like the NEO-6M?</summary>
+      <p>The A7670G already has GNSS. A separate module would add cost, board space, power draw and another serial connection. We only need its antenna.</p></details>
+    <details><summary>Why an active buzzer?</summary>
+      <p>An active buzzer beeps when its pin is set high, so it needs no tone-generation code and almost no CPU. It is loud enough as an alarm, and the firmware stops it after 15 seconds so the mic can hear the wearer.</p></details>
+    <details><summary>Why IMA ADPCM for audio?</summary>
+      <p>It compresses audio 4× (16-bit samples to 4-bit) with very little CPU, which the ESP32 can do in real time. At 8 kHz that is about 32 kbit/s, small enough for a weak 4G link. Each 2-second chunk restarts the compressor, so one lost chunk never damages the next.</p></details>
+    <details><summary>Why a Vero board and not a PCB yet?</summary>
+      <p>A Vero board lets us change wiring quickly while the design is still moving (we changed the modem and the mic). Once the circuit is final, we design a custom PCB, which is smaller and more reliable.</p></details>
+  </section>
+
+  <!-- DATA + PACKETS -->
+  <section id="data"><h2>How data moves, and every packet</h2><p class="sub">Device ↔ cloud uses small binary MQTT packets. App ↔ cloud uses HTTPS, WebSocket, Realtime and push.</p>
+    <details><summary>Explain the full data flow, end to end.</summary>
+      <ul><li><b>Device → broker:</b> binary packets over MQTT on 4G (or Wi-Fi), QoS 1.</li>
+      <li><b>Broker → API:</b> the API is subscribed to every device topic, decodes each packet and writes it to Postgres.</li>
+      <li><b>API → device:</b> commands go back on the device's <code>cmd</code> topic (acknowledge SOS, locate, contacts, gestures, Wi-Fi).</li>
+      <li><b>Database → app:</b> Supabase Realtime pushes row changes (new alert, device online) to the open app; the API's WebSocket streams live location.</li>
+      <li><b>Database → closed app:</b> Firebase push notification (from the <code>notify-alert</code> function and the jobs service).</li>
+      <li><b>App → cloud:</b> HTTPS to Supabase for reading and saving data (protected by RLS), and HTTPS to our API for device actions such as "locate now" and "save button settings".</li>
+      <li><b>Audio:</b> device → MQTT → API → private storage bucket → app plays the chunks.</li></ul></details>
+    <details><summary>Why binary packets and not JSON?</summary>
+      <ul><li><b>Size:</b> a location is 12 bytes in binary versus about 80 in JSON. Less data means faster delivery on a weak signal, lower SIM cost and less battery.</li>
+      <li><b>Simple on the ESP32:</b> the firmware fills a packed C struct and sends it as it is; no text parsing or JSON library.</li>
+      <li><b>Fixed length:</b> the server knows exactly where each field is, and any packet of the wrong size is rejected.</li>
+      <li><b>Versioned:</b> byte 0 is always the format version (1), so we can change the format later without breaking old devices.</li></ul>
+      <p class="key">Smaller, faster and easier for a microcontroller, with a version byte for the future.</p></details>
+    <details><summary>Rules that apply to every packet</summary>
+      <ul><li>Byte 0 = format version, currently <code>0x01</code>.</li>
+      <li>Numbers are little-endian (the ESP32's own byte order).</li>
+      <li>Latitude and longitude are signed 32-bit integers = degrees × 1,000,000 (about 11 cm precision, no floating point).</li>
+      <li>No GPS fix: latitude and longitude are 0 and the "fix valid" flag is clear.</li>
+      <li>Every publish and subscribe uses QoS 1 (delivered at least once).</li>
+      <li>Topic: <code>safetag/v1/{serial}/{kind}</code>.</li></ul></details>
+    <details><summary>Location packet: <code>…/loc</code>, 12 bytes</summary>
+      <div class="tbl"><table><tr><th>Bytes</th><th>Field</th><th>Why</th></tr>
+      <tr><td>0</td><td>version (1)</td><td>future format changes</td></tr>
+      <tr><td>1–4</td><td>latitude × 1e6 (i32)</td><td>integer instead of float, 4 bytes</td></tr>
+      <tr><td>5–8</td><td>longitude × 1e6 (i32)</td><td>same</td></tr>
+      <tr><td>9</td><td>accuracy in metres (u8)</td><td>the map shows a circle; 255 = 255 m or worse</td></tr>
+      <tr><td>10</td><td>speed km/h (u8)</td><td>walking vs. in a vehicle</td></tr>
+      <tr><td>11</td><td>flags: fix valid, SOS active, on a journey</td><td>three yes/no values in one byte</td></tr></table></div>
+      <p>Sent every 5 s during an SOS or journey, every 300 s otherwise. The server can change both intervals.</p></details>
+    <details><summary>SOS event packet: <code>…/event</code>, 16 bytes</summary>
+      <div class="tbl"><table><tr><th>Bytes</th><th>Field</th><th>Why</th></tr>
+      <tr><td>0</td><td>version</td><td>—</td></tr>
+      <tr><td>1–4</td><td>event ID (random u32)</td><td>resends of the same press are recognised and counted once</td></tr>
+      <tr><td>5</td><td>type: 1 audible, 2 silent, 3 cancel</td><td>what the wearer asked for</td></tr>
+      <tr><td>6</td><td>trigger: 1 press, 2 hold</td><td>which gesture raised it</td></tr>
+      <tr><td>7–10</td><td>latitude × 1e6</td><td>last known position, so the alert has a location at once</td></tr>
+      <tr><td>11–14</td><td>longitude × 1e6</td><td>—</td></tr>
+      <tr><td>15</td><td>flags: fix valid</td><td>tells the app if the position is real</td></tr></table></div>
+      <p>Resent every 5 s with the same event ID until <code>SOS_RECEIVED</code> comes back. After 30 s without it: SMS and call.</p></details>
+    <details><summary>Telemetry packet: <code>…/telemetry</code>, 7 bytes</summary>
+      <div class="tbl"><table><tr><th>Bytes</th><th>Field</th></tr>
+      <tr><td>0</td><td>version</td></tr><tr><td>1</td><td>battery 0–100 %</td></tr><tr><td>2</td><td>signal strength 0–31 (99 = unknown)</td></tr>
+      <tr><td>3–5</td><td>firmware version: major, minor, patch</td></tr><tr><td>6</td><td>flags: charging, low battery</td></tr></table></div>
+      <p>Every 60 s. Feeds the battery and signal bars in the app and the admin device registry.</p></details>
+    <details><summary>Status packet: <code>…/status</code>, 2 bytes</summary>
+      <p>Version + 1 (online) or 0 (offline). It is "retained", so anyone subscribing sees the latest state at once. The same packet is set as the device's MQTT last will, so if the device vanishes the broker announces it offline automatically.</p></details>
+    <details><summary>Audio packet: <code>…/audio</code>, 14-byte header + audio</summary>
+      <div class="tbl"><table><tr><th>Bytes</th><th>Field</th><th>Why</th></tr>
+      <tr><td>0</td><td>version</td><td>—</td></tr>
+      <tr><td>1–4</td><td>event ID of the SOS</td><td>attaches the audio to the right alert</td></tr>
+      <tr><td>5–6</td><td>chunk number</td><td>plays and stores chunks in order, even if they arrive late</td></tr>
+      <tr><td>7</td><td>codec: 1 IMA ADPCM, 2 PCM</td><td>room for a better codec later</td></tr>
+      <tr><td>8–9</td><td>sample rate (8000)</td><td>—</td></tr>
+      <tr><td>10–12</td><td>ADPCM start state (predictor, step index)</td><td>each chunk decodes on its own, so a lost chunk does not spoil the next</td></tr>
+      <tr><td>13</td><td>reserved</td><td>—</td></tr>
+      <tr><td>14…</td><td>audio, 2 samples per byte</td><td>4× smaller than raw audio</td></tr></table></div>
+      <p>2 seconds per chunk ≈ 8 KB. With no data, up to 8 chunks are queued and sent when the connection returns.</p></details>
+    <details><summary>Acknowledgement packet: <code>…/ack</code>, 4 bytes</summary>
+      <p>Version, the command number being answered (2 bytes), and a result: 0 done, 1 unknown command, 2 could not do it. Lets the server know a command such as new gestures or contacts actually arrived.</p></details>
+    <details><summary>Commands from the server: <code>…/cmd</code></summary>
+      <p>Every command starts with 4 bytes: version, command code, command number (echoed in the ack). Then its arguments.</p>
+      <div class="tbl"><table><tr><th>Code</th><th>Command</th><th>What the device does</th></tr>
+      <tr><td>0x01</td><td>SOS_RECEIVED + event ID</td><td>stop resending; do not fall back to SMS</td></tr>
+      <tr><td>0x02</td><td>SOS_CANCELLED + event ID</td><td>alert ended: stop buzzer and audio</td></tr>
+      <tr><td>0x03</td><td>LOCATE</td><td>send a location now; if asleep, wake and report for 60 s</td></tr>
+      <tr><td>0x04 / 0x05</td><td>JOURNEY_START / END</td><td>switch between fast and slow reporting</td></tr>
+      <tr><td>0x06 / 0x07</td><td>OFF_ROUTE + metres / ON_ROUTE</td><td>short buzz to warn the wearer</td></tr>
+      <tr><td>0x08</td><td>SET_INTERVAL</td><td>new idle and active reporting intervals</td></tr>
+      <tr><td>0x09</td><td>RESET</td><td>restart</td></tr>
+      <tr><td>0x0A</td><td>ROUTE_ALERT</td><td>contacts were alerted about the route: long buzz</td></tr>
+      <tr><td>0x0B</td><td>SET_CONTACTS (up to 3 numbers)</td><td>save in flash for offline SMS and call</td></tr>
+      <tr><td>0x0C</td><td>SET_BUTTONS (3 gestures)</td><td>save the wearer's gestures in flash</td></tr>
+      <tr><td>0x0D</td><td>SET_WIFI (SSID + password)</td><td>save the Wi-Fi network; never stored on the server</td></tr></table></div></details>
+    <details><summary>Why QoS 1 and not QoS 0 or 2?</summary>
+      <p>QoS 0 can lose a message, which is unacceptable for an SOS. QoS 2 guarantees exactly once but needs four messages per publish, which is slow on a weak signal. QoS 1 guarantees delivery, and the duplicates it can cause are harmless because every SOS carries its event ID.</p></details>
+    <details><summary>How much mobile data does SafeTag use?</summary>
+      <p>Idle: a 12-byte location every 5 minutes and 7-byte telemetry every minute, plus MQTT overhead, so only a few megabytes a month. During an SOS, audio dominates: about 4 KB per second, roughly 2.4 MB for a 10-minute SOS. A normal prepaid data bundle is enough.</p></details>
+    <details><summary>How does the app send data, and why not through MQTT too?</summary>
+      <p>The app talks HTTPS to Supabase, where login, RLS and Realtime already exist, so every request is checked against the user's token. Device-only actions (locate, gestures, Wi-Fi) go to our API, which checks the user owns the device and then sends the MQTT command. Phones do not need MQTT: they are not battery-critical in the same way, and HTTPS through Supabase gives security for free.</p></details>
+  </section>
+
+  <!-- SOS LOGIC -->
+  <section id="sos"><h2>SOS logic and timings</h2>
+    <details><summary>Walk us through exactly what happens when the button is pressed.</summary>
+      <ul><li>The firmware detects the gesture (default: double press = audible, hold 3 s = silent).</li>
+      <li>It picks a random event ID and sends a 16-byte event packet; audible SOS also starts the buzzer and red LED.</li>
+      <li>It starts streaming audio straight away.</li>
+      <li>It resends the event every 5 s until the server answers <code>SOS_RECEIVED</code>.</li>
+      <li>The server creates one alert; the trigger pushes to all contacts; the jobs service SMSes contacts one by one.</li>
+      <li>Location every 5 s, audio every 2 s, until the SOS ends (contact resolves, wearer cancels, or 15 minutes of audio).</li>
+      <li>No confirmation after 30 s: the device SMSes every saved contact and rings contact #1 for 40 s, and keeps retrying the server.</li></ul></details>
+    <details><summary>How does the device know the contacts' numbers without internet?</summary>
+      <p>Each time the device comes online, the server sends <code>SET_CONTACTS</code> with up to three numbers. The device saves them in flash memory, so they are there when the data connection is not.</p></details>
+    <details><summary>How does cancel from the device work?</summary>
+      <p>Holding the button for 8 seconds (default) during an SOS sends a cancel event. The server ends the alert as "user confirmed safe", tells the contacts, and confirms back to the device. Cancel only works while an SOS is running, so it cannot be triggered by accident.</p></details>
+    <details><summary>Can the wearer change the gestures?</summary>
+      <p>Yes, in the app: each of audible, silent and cancel can be 1–5 quick presses or a 2–10 second hold. The app refuses duplicates. The server sends the new gestures with <code>SET_BUTTONS</code> and the device saves them in flash.</p></details>
+    <details><summary>What is the journey dead-man switch?</summary>
+      <p>The wearer starts a journey with an expected arrival time. If the journey is still active after that time plus a grace period, the server opens a journey alert automatically, even if the phone is dead. Leaving the route for more than 45 seconds alerts contacts too.</p></details>
+    <details><summary>How do you detect a device is offline?</summary>
+      <p>The broker's "last will" marks it offline instantly if the connection drops, and the jobs service marks any device silent for 5 minutes as offline. The app then shows "SafeTag is offline".</p></details>
+  </section>
+
+  <!-- APP -->
+  <section id="app"><h2>The app</h2>
+    <details><summary>What is the app built with?</summary>
+      <p>Flutter, so one code base runs on Android and iOS. Riverpod for state, go_router for navigation, Google Maps for maps, Supabase's Flutter SDK for data and realtime, and Firebase for push notifications.</p></details>
+    <details><summary>What can each role do?</summary>
+      <ul><li><b>Wearer:</b> SOS from the phone, link the SafeTag, contacts and their order, safe zones, planned and recorded journeys, button gestures, Wi-Fi, alert history with recordings.</li>
+      <li><b>Trusted contact:</b> live alerts with map and audio, "I'm responding", one-tap call, alert history, journey monitoring, request the current location.</li>
+      <li><b>Admin:</b> statistics, user management, device registry with status and battery.</li></ul></details>
+    <details><summary>How is a device linked to a user?</summary>
+      <p>Each manufactured serial is in <code>device_registry</code> with a claim code. The wearer scans the QR or types the code in the app, and the <code>claim_device</code> function links it to their account. Without the code, nobody can claim someone else's device.</p></details>
+    <details><summary>Can someone use SafeTag without the device?</summary>
+      <p>Yes. The phone can act as the device: the app's SOS button and location work the same way, so contacts and escalation work before the hardware arrives.</p></details>
+    <details><summary>How did you test the app?</summary>
+      <p>On real Android phones, screen by screen: sign-up, device linking, contacts, raising and cancelling an SOS, zones, journeys and the gesture settings. Feedback from testing led to changes such as one-contact-at-a-time escalation and a clearer home screen.</p></details>
+  </section>
+
+  <!-- SECURITY -->
+  <section id="sec"><h2>Security and privacy</h2>
+    <details><summary>How is the device authenticated?</summary>
+      <p>Each device logs in to the broker with its serial and its own secret password, and the broker's access list lets it use only <code>safetag/v1/{its serial}/…</code>. A device cannot read or fake another device's messages.</p></details>
+    <details><summary>Is the connection encrypted?</summary>
+      <p>The app and API use HTTPS. The device's MQTT connection is not encrypted yet in the prototype; the broker already supports MQTTS (TLS on port 8883), and turning it on is in the plan for the final deployment.</p></details>
+    <details><summary>Who can see a wearer's location?</summary>
+      <p>Only the wearer and the trusted contacts they added, enforced by row-level security in the database. Location is sent often only during an SOS or a journey; otherwise every 5 minutes.</p></details>
+    <details><summary>Where are secrets kept?</summary>
+      <p>In environment variables on Railway and in an untracked file on the device. Nothing secret is in the source code. The Supabase service key, which bypasses RLS, is only on the backend.</p></details>
+  </section>
+
+  <!-- WEAK SPOTS -->
+  <section id="weak"><h2>Weak spots: answer honestly</h2><p class="sub">Panels push here. Admit it, then say the fix.</p>
+    <details><summary>Location does not work on the prototype. Why?</summary>
+      <p>The GPS antenna is not fitted on the modem yet. The modem has GNSS built in; once the antenna is connected, location will work. Everything else in the SOS path works now.</p></details>
+    <details><summary>The audio is noisy.</summary>
+      <p>The modem's radio bursts couple into the mic wiring on the Vero board. We are fixing it with shorter twisted wires, decoupling capacitors and moving the mic away from the modem. On the PCB this goes away with a proper ground plane.</p></details>
+    <details><summary>What is the battery life?</summary>
+      <p>Not measured yet; the bench prototype runs from a supply. The target is several days by sleeping between reports and waking instantly on a press. We will measure it once the battery and enclosure are in, during field testing.</p></details>
+    <details><summary>What if there is no mobile signal at all?</summary>
+      <p>Then no device can send anything, including a phone. SafeTag keeps retrying and sends the moment any signal returns, and audio chunks are queued. Wi-Fi is used when available.</p></details>
+    <details><summary>What if the attacker takes the device?</summary>
+      <p>The alert has already gone out by then. A silent SOS gives no sign it was pressed, and contacts already have the last location and the audio recorded so far.</p></details>
+    <details><summary>What if the server is down?</summary>
+      <p>The device does not get a confirmation, so after 30 seconds it SMSes and calls the contacts itself. Railway also restarts crashed services automatically.</p></details>
+    <details><summary>Why is it not a wristband?</summary>
+      <p>In the survey 50% preferred a keychain or necklace and only 44% a wristband, and smartwatches already cover the wrist. A keychain can also be hidden.</p></details>
+  </section>
+
+  <!-- NUMBERS -->
+  <section id="nums"><h2>Numbers to remember</h2>
+    <details open><summary>Key figures</summary>
+      <div class="tbl"><table><tr><th>What</th><th>Value</th></tr>
+      <tr><td>SOS retry</td><td>every 5 s until confirmed</td></tr>
+      <tr><td>Offline fallback</td><td>after 30 s: SMS to all saved contacts (up to 3), call contact #1 for 40 s</td></tr>
+      <tr><td>Location</td><td>every 5 s in SOS or journey, every 300 s otherwise</td></tr>
+      <tr><td>Telemetry</td><td>every 60 s (battery, signal, firmware)</td></tr>
+      <tr><td>Audio</td><td>8 kHz, IMA ADPCM, 2-second chunks, up to 15 minutes</td></tr>
+      <tr><td>Alarm</td><td>buzzer for 15 s, then quiet</td></tr>
+      <tr><td>Gestures</td><td>double press audible, hold 3 s silent, hold 8 s cancel (changeable)</td></tr>
+      <tr><td>Packets</td><td>location 12 B, SOS event 16 B, telemetry 7 B</td></tr>
+      <tr><td>Device offline</td><td>after 5 minutes silent, or at once via last will</td></tr>
+      <tr><td>Route deviation</td><td>alert after 45 s off route; arrival within 100 m</td></tr>
+      <tr><td>Database</td><td>14 tables, all with row-level security</td></tr>
+      <tr><td>Backend</td><td>4 Railway services (broker, api, jobs, redis), 48 tests</td></tr>
+      <tr><td>Survey</td><td>129 responses, 22 Aug – 5 Sep 2026</td></tr>
+      <tr><td>Target cost</td><td>under Rs 7,500 per device</td></tr>
+      <tr><td>Requirements</td><td>17 functional, 10 non-functional</td></tr></table></div></details>
+  </section>
+
+  <p class="none" id="none" hidden>No questions match. Try a shorter word.</p>
+</div>
+
+<script>
+(function () {
+  var all = Array.prototype.slice.call(document.querySelectorAll('details'));
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section'));
+  var q = document.getElementById('q'), count = document.getElementById('count'), none = document.getElementById('none');
+  function update() {
+    var t = q.value.trim().toLowerCase(), shown = 0;
+    all.forEach(function (d) {
+      var hit = !t || d.textContent.toLowerCase().indexOf(t) >= 0;
+      d.hidden = !hit; if (hit) shown++;
+      if (t && hit) d.open = true;
+    });
+    secs.forEach(function (s) { s.hidden = !s.querySelector('details:not([hidden])'); });
+    count.textContent = shown + ' questions';
+    none.hidden = shown > 0;
+  }
+  q.addEventListener('input', update);
+  document.getElementById('openall').addEventListener('click', function () { all.forEach(function (d) { d.open = true; }); });
+  document.getElementById('closeall').addEventListener('click', function () { all.forEach(function (d) { d.open = false; }); });
+  update();
+})();
+</script>
+
+</body>
+</html>
